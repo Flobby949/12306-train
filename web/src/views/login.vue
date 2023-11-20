@@ -43,7 +43,7 @@ const onFinishFailed = (errorInfo) => {
 }
 
 const sendCode = () => {
-  axios.post('http://localhost:8000/member/member/code', {
+  axios.post('/member/member/code', {
     mobile: loginForm.mobile
   }).then(res => {
     const data = res.data
@@ -63,7 +63,7 @@ const sendCode = () => {
 }
 
 const login = () => {
-  axios.post('http://localhost:8000/member/member/login', {
+  axios.post('/member/member/login', {
     mobile: loginForm.mobile,
     code: loginForm.code
   }).then(res => {
