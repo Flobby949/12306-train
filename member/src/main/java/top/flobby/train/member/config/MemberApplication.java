@@ -1,5 +1,6 @@
 package top.flobby.train.member.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
  **/
 
 @SpringBootApplication(scanBasePackages = "top.flobby")
+@MapperScan("top.flobby.train.*.mapper")
 public class MemberApplication {
     private static final Logger logger = LoggerFactory.getLogger(MemberApplication.class);
 
