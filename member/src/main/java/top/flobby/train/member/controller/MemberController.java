@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import top.flobby.train.common.resp.CommonResp;
+import top.flobby.train.member.req.MemberLoginReq;
 import top.flobby.train.member.req.MemberRegisterReq;
 import top.flobby.train.member.req.MemberSendCodeReq;
 import top.flobby.train.member.service.MemberService;
@@ -36,5 +37,10 @@ public class MemberController {
     public CommonResp<Object> sendCode(@RequestBody @Valid MemberSendCodeReq req) {
         memberService.sendCode(req);
         return CommonResp.success();
+    }
+
+    @PostMapping("/login")
+    public CommonResp<Object> login(@RequestBody @Valid MemberLoginReq req) {
+        return CommonResp.success(memberService.login(req));
     }
 }

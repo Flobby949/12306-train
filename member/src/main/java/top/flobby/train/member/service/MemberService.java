@@ -1,6 +1,8 @@
 package top.flobby.train.member.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -10,8 +12,10 @@ import top.flobby.train.common.utils.SnowUtil;
 import top.flobby.train.member.domain.Member;
 import top.flobby.train.member.domain.MemberExample;
 import top.flobby.train.member.mapper.MemberMapper;
+import top.flobby.train.member.req.MemberLoginReq;
 import top.flobby.train.member.req.MemberRegisterReq;
 import top.flobby.train.member.req.MemberSendCodeReq;
+import top.flobby.train.member.resp.MemberLoginResp;
 
 import java.util.List;
 
@@ -54,6 +58,11 @@ public class MemberService {
         return member.getId();
     }
 
+    /**
+     * 发送验证码
+     *
+     * @param req req
+     */
     public void sendCode(MemberSendCodeReq req) {
         String mobile = req.getMobile();
         MemberExample memberExample = new MemberExample();
@@ -75,5 +84,30 @@ public class MemberService {
         log.info("生成短信验证码：{}", code);
         log.info("保存短信记录表");
         log.info("对接短信发送接口");
+    }
+
+    public MemberLoginResp login(MemberLoginReq req) {
+        String mobile = req.getMobile();
+        String code = req.getCode();
+        Member memberDB = selectByMobile(mobile);
+        // 如果手机号不存，加入一条记录
+        if (ObjectUtil.isNull(memberDB)) {
+           throw new BusinessException(BusinessExceptionEnum.MEMBER_PHONE_NOT_EXIST);
+        }
+        // 校验验证码
+        if (!ObjectUtil.equal(code, "8888")) {
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_CODE_ERROR);
+        }
+        return BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+    }
+
+    private Member selectByMobile(String mobile) {
+        MemberExample memberExample = new MemberExample();
+        memberExample.createCriteria().andMobileEqualTo(mobile);
+        List<Member> list = memberMapper.selectByExample(memberExample);
+        if (CollUtil.isEmpty(list)) {
+            return null;
+        }
+        return list.get(0);
     }
 }
