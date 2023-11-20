@@ -5,6 +5,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import top.flobby.train.common.exception.BusinessException;
 import top.flobby.train.common.exception.BusinessExceptionEnum;
+import top.flobby.train.common.utils.SnowUtil;
 import top.flobby.train.member.domain.Member;
 import top.flobby.train.member.domain.MemberExample;
 import top.flobby.train.member.mapper.MemberMapper;
@@ -39,7 +40,7 @@ public class MemberService {
 
         Member member = new Member();
         member.setMobile(req.getMobile());
-        member.setId(System.currentTimeMillis());
+        member.setId(SnowUtil.getSnowflakeNextId());
         memberMapper.insert(member);
         return member.getId();
     }
