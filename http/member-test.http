@@ -9,3 +9,11 @@ Accept: application/json
 ### member表数量测试
 GET http://localhost:8000/member/member/count
 Accept: application/json
+
+### 注册
+POST http://localhost:8000/member/member/register
+Content-Type: application/x-www-form-urlencoded
+
+mobile=18962521753
+
+###
