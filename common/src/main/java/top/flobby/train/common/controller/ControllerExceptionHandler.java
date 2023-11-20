@@ -2,6 +2,7 @@ package top.flobby.train.common.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,6 +45,19 @@ public class ControllerExceptionHandler {
         CommonResp<?> commonResp = new CommonResp<>();
         commonResp.setSuccess(false);
         commonResp.setMessage(e.getE().getDesc());
+        return commonResp;
+    }
+
+    /**
+     * 参数校验异常的处理
+     */
+    @ExceptionHandler(BindException.class)
+    @ResponseBody
+    public CommonResp<?> exceptionHandler(BindException e) {
+        logger.error("参数校验异常：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        CommonResp<?> commonResp = new CommonResp<>();
+        commonResp.setSuccess(false);
+        commonResp.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return commonResp;
     }
 }

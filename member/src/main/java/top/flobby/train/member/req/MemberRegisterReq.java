@@ -1,5 +1,6 @@
 package top.flobby.train.member.req;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Data;
 @Data
 public class MemberRegisterReq {
 
+    @NotNull(message = "手机号不能为空")
     private String mobile;
 
 }
