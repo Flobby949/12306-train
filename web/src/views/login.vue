@@ -28,6 +28,8 @@
 import { reactive } from 'vue'
 import axios from 'axios'
 import { notification } from 'ant-design-vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const loginForm = reactive({
   mobile: '18962521753',
@@ -43,42 +45,46 @@ const onFinishFailed = (errorInfo) => {
 }
 
 const sendCode = () => {
-  axios.post('/member/member/code', {
-    mobile: loginForm.mobile
-  }).then(res => {
-    const data = res.data
-    if (data.success) {
-      notification.success({
-        message: '发送成功',
-        description: '验证码发送成功，请注意查收'
-      })
-      loginForm.code = '8888'
-    } else {
-      notification.error({
-        message: '发送失败',
-        description: data.message
-      })
-    }
-  })
+  axios
+    .post('/member/member/code', {
+      mobile: loginForm.mobile
+    })
+    .then((res) => {
+      const data = res.data
+      if (data.success) {
+        notification.success({
+          message: '发送成功',
+          description: '验证码发送成功，请注意查收'
+        })
+        loginForm.code = '8888'
+      } else {
+        notification.error({
+          message: '发送失败',
+          description: data.message
+        })
+      }
+    })
 }
 
 const login = () => {
-  axios.post('/member/member/login', {
-    mobile: loginForm.mobile,
-    code: loginForm.code
-  }).then(res => {
-    const data = res.data
-    if (data.success) {
-      notification.success({
-        description: '登录成功'
-      })
-      console.log(data.data)
-    } else {
-      notification.error({
-        description: data.message
-      })
-    }
-  })
+  axios
+    .post('/member/member/login', {
+      mobile: loginForm.mobile,
+      code: loginForm.code
+    })
+    .then((res) => {
+      const data = res.data
+      if (data.success) {
+        notification.success({
+          description: '登录成功'
+        })
+        router.push('/')
+      } else {
+        notification.error({
+          description: data.message
+        })
+      }
+    })
 }
 </script>
 
@@ -89,10 +95,10 @@ const login = () => {
 }
 
 .login-main {
-    margin-top: 100px;
-    padding: 30px 30px 20px;
-    border: 2px solid grey;
-    border-radius: 10px;
-    background-color: #fcfcfc;
+  margin-top: 100px;
+  padding: 30px 30px 20px;
+  border: 2px solid grey;
+  border-radius: 10px;
+  background-color: #fcfcfc;
 }
 </style>
