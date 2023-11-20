@@ -1,16 +1,30 @@
 package top.flobby.train.member.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import top.flobby.train.member.domain.Member;
+import top.flobby.train.member.domain.MemberExample;
 
-/**
- * @author : Flobby
- * @program : train
- * @description :
- * @create : 2023-11-20 15:43
- **/
-
-@Mapper
 public interface MemberMapper {
+    long countByExample(MemberExample example);
 
-    int countMember();
+    int deleteByExample(MemberExample example);
+
+    int deleteByPrimaryKey(Long id);
+
+    int insert(Member row);
+
+    int insertSelective(Member row);
+
+    List<Member> selectByExample(MemberExample example);
+
+    Member selectByPrimaryKey(Long id);
+
+    int updateByExampleSelective(@Param("row") Member row, @Param("example") MemberExample example);
+
+    int updateByExample(@Param("row") Member row, @Param("example") MemberExample example);
+
+    int updateByPrimaryKeySelective(Member row);
+
+    int updateByPrimaryKey(Member row);
 }

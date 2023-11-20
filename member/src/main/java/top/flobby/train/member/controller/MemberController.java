@@ -9,9 +9,8 @@ import top.flobby.train.member.service.MemberService;
  * @author : Flobby
  * @program : train
  * @description : controller
- * @create : 2023-11-20 15:50
+ * @create : 2023-11-20 16:00
  **/
-
 
 @RestController
 @RequestMapping("/member")
@@ -21,7 +20,7 @@ public class MemberController {
     private MemberService memberService;
 
     @RequestMapping("/count")
-    public String countMember() {
-        return "member count is " + memberService.countMember();
+    public int count() {
+        return memberService.count();
     }
 }

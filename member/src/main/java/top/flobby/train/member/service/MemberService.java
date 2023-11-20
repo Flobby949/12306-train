@@ -8,7 +8,7 @@ import top.flobby.train.member.mapper.MemberMapper;
  * @author : Flobby
  * @program : train
  * @description : service
- * @create : 2023-11-20 15:49
+ * @create : 2023-11-20 15:59
  **/
 
 @Service
@@ -17,7 +17,7 @@ public class MemberService {
     @Resource
     private MemberMapper memberMapper;
 
-    public int countMember(){
-        return memberMapper.countMember();
+    public int count() {
+        return Math.toIntExact(memberMapper.countByExample(null));
     }
 }
