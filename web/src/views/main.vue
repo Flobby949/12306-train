@@ -28,7 +28,7 @@
 import TheHeaderView from '@/components/the-header.vue'
 import TheSiderView from '@/components/the-sider.vue'
 import { ref } from 'vue'
-import axios from 'axios'
+// import axios from 'axios'
 const count = ref(0)
 
 const getCount = () => {
@@ -41,7 +41,7 @@ const getCount = () => {
   })
 }
 
-getCount()
+// getCount()
 </script>
 
 <style scoped>
