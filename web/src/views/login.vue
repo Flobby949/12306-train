@@ -50,8 +50,7 @@ const sendCode = () => {
     .post('/member/member/code', {
       mobile: loginForm.mobile
     })
-    .then((res) => {
-      const data = res.data
+    .then((data) => {
       if (data.success) {
         notification.success({
           message: '发送成功',
@@ -73,8 +72,7 @@ const login = () => {
       mobile: loginForm.mobile,
       code: loginForm.code
     })
-    .then((res) => {
-      const data = res.data
+    .then((data) => {
       if (data.success) {
         notification.success({
           description: '登录成功'
