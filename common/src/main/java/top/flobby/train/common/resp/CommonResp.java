@@ -1,5 +1,7 @@
 package top.flobby.train.common.resp;
 
+import lombok.Data;
+
 /**
  * @author : Flobby
  * @program : train
@@ -7,58 +9,44 @@ package top.flobby.train.common.resp;
  * @create : 2023-11-20 16:07
  **/
 
+@Data
 public class CommonResp<T> {
     /**
-     * 业务上的成功或失败
+     * 业务成功或失败
      */
-    private boolean success = true;
-
+    private Boolean success = true;
     /**
      * 返回信息
      */
-    private String message;
-
+    private String message = "请求成功";
     /**
-     * 返回泛型数据，自定义类型
+     * 返回数据
      */
-    private T content;
-
-    public CommonResp() {
+    private T data;
+    public static <T> CommonResp<T> success(T data) {
+        CommonResp<T> res = new CommonResp<>();
+        res.setData(data);
+        return res;
     }
 
-    public CommonResp(T content) {
-        this.content = content;
+    public static <T> CommonResp<T> success() {
+        return success(null);
     }
 
-    public boolean getSuccess() {
-        return success;
+    public static <T> CommonResp<T> error(String msg, T data) {
+        CommonResp<T> res = new CommonResp<>();
+        res.setSuccess(false);
+        res.setMessage(msg);
+        res.setData(data);
+        return res;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public static <T> CommonResp<T> error(String msg) {
+        return error(msg, null);
     }
 
-    public String getMessage() {
-        return message;
+    public static <T> CommonResp<T> error() {
+        return error("请求失败！", null);
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getContent() {
-        return content;
-    }
-
-    public void setContent(T content) {
-        this.content = content;
-    }
-
-    @Override
-    public String toString() {
-        return "CommonResp{" + "success=" + success +
-                ", message='" + message + '\'' +
-                ", content=" + content +
-                '}';
-    }
 }
