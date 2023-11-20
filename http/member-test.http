@@ -2,4 +2,8 @@
 GET http://localhost:8001/member/test
 Accept: application/json
 
+### 网关测试接口
+GET http://localhost:8000/member/test
+Accept: application/json
+
 ###
