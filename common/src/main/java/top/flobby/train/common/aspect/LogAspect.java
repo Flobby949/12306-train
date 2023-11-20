@@ -1,4 +1,4 @@
-package top.flobby.train.member.aspect;
+package top.flobby.train.common.aspect;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSON;

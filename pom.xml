@@ -16,6 +16,7 @@
     <description>train</description>
     <modules>
         <module>member</module>
+        <module>common</module>
     </modules>
 
     <properties>
@@ -44,6 +45,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>top.flobby</groupId>
+                <artifactId>common</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
