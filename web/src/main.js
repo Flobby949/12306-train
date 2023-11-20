@@ -24,9 +24,9 @@ console.log('请求地址：' + process.env.VUE_APP_BASE_API)
 // axios 请求拦截
 axios.interceptors.request.use(
   function (config) {
-    console.log('-----------请求参数-----------')
-    console.log(config)
-    console.log('-----------请求参数-----------')
+    // console.log('-----------请求参数-----------')
+    // console.log(config)
+    // console.log('-----------请求参数-----------')
     const token = store.state.member.token
     if (token) {
       config.headers.token = token
@@ -40,9 +40,9 @@ axios.interceptors.request.use(
 // axios 响应拦截
 axios.interceptors.response.use(
   (response) => {
-    console.log('-----------响应参数-----------')
-    console.log(response.data)
-    console.log('-----------响应参数-----------')
+    // console.log('-----------响应参数-----------')
+    // console.log(response.data)
+    // console.log('-----------响应参数-----------')
     return response.data
   },
   (error) => {

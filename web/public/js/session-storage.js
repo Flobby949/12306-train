@@ -3,11 +3,12 @@ SessionStorage = {
   get: function (key) {
     const v = sessionStorage.getItem(key)
     if (v && typeof v !== 'undefined' && v !== 'undefined') {
-      return JSON.parse(v)
+      return v
     }
   },
   set: function (key, data) {
-    sessionStorage.setItem(key, JSON.stringify(data))
+    console.log(data)
+    sessionStorage.setItem(key, data)
   },
   remove: function (key) {
     sessionStorage.removeItem(key)

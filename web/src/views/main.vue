@@ -28,20 +28,18 @@
 import TheHeaderView from '@/components/the-header.vue'
 import TheSiderView from '@/components/the-sider.vue'
 import { ref } from 'vue'
-// import axios from 'axios'
+import axios from 'axios'
 const count = ref(0)
 
 const getCount = () => {
-  axios.get('/member/member/count').then((res) => {
-    const data = res.data
-    console.log('123' + data)
+  axios.get('/member/member/count').then((data) => {
     if (data.success) {
       count.value = data.data
     }
   })
 }
 
-// getCount()
+getCount()
 </script>
 
 <style scoped>

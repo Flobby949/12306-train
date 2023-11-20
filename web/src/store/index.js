@@ -4,13 +4,16 @@ const MEMBER = 'MEMBER'
 
 export default createStore({
   state: {
-    member: window.sessionStorage.getItem(MEMBER) || {}
+    member: JSON.parse(window.sessionStorage.getItem(MEMBER)) || {}
   },
   getters: {},
   mutations: {
     setMember(state, _member) {
+      console.log('setMember')
+      console.log(_member)
+      console.log('setMember')
       state.member = _member
-      window.sessionStorage.setItem(MEMBER, _member)
+      window.sessionStorage.setItem(MEMBER, JSON.stringify(_member))
     }
   },
   actions: {},
