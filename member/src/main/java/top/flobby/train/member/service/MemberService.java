@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.flobby.train.common.exception.BusinessException;
 import top.flobby.train.common.exception.BusinessExceptionEnum;
+import top.flobby.train.common.utils.JwtUtil;
 import top.flobby.train.common.utils.SnowUtil;
 import top.flobby.train.member.domain.Member;
 import top.flobby.train.member.domain.MemberExample;
@@ -92,13 +93,17 @@ public class MemberService {
         Member memberDB = selectByMobile(mobile);
         // 如果手机号不存，加入一条记录
         if (ObjectUtil.isNull(memberDB)) {
-           throw new BusinessException(BusinessExceptionEnum.MEMBER_PHONE_NOT_EXIST);
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_PHONE_NOT_EXIST);
         }
         // 校验验证码
         if (!ObjectUtil.equal(code, "8888")) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_CODE_ERROR);
         }
-        return BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+        // 生成token
+        MemberLoginResp memberLoginResp = BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+        String token = JwtUtil.createToken(memberLoginResp.getId(), memberLoginResp.getMobile());
+        memberLoginResp.setToken(token);
+        return memberLoginResp;
     }
 
     private Member selectByMobile(String mobile) {

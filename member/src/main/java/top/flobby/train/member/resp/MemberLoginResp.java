@@ -14,6 +14,8 @@ import lombok.Data;
 @Builder
 public class MemberLoginResp {
 
-        private Long id;
-        private String mobile;
+    private Long id;
+    private String mobile;
+
+    private String token;
 }
