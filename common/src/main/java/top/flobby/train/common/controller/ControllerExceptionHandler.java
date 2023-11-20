@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import top.flobby.train.common.exception.BusinessException;
 import top.flobby.train.common.resp.CommonResp;
 
 /**
@@ -24,7 +25,7 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public CommonResp<?> exception(Exception e) {
+    public CommonResp<?> exceptionHandler(Exception e) {
         logger.error("系统异常：", e);
         CommonResp<?> commonResp = new CommonResp<>();
         commonResp.setSuccess(false);
@@ -32,4 +33,17 @@ public class ControllerExceptionHandler {
         return commonResp;
     }
 
+
+    /**
+     * 业务异常的处理
+     */
+    @ExceptionHandler(BusinessException.class)
+    @ResponseBody
+    public CommonResp<?> exceptionHandler(BusinessException e) {
+        logger.error("业务异常：{}", e.getE().getDesc());
+        CommonResp<?> commonResp = new CommonResp<>();
+        commonResp.setSuccess(false);
+        commonResp.setMessage(e.getE().getDesc());
+        return commonResp;
+    }
 }

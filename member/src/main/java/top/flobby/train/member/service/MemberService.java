@@ -3,6 +3,8 @@ package top.flobby.train.member.service;
 import cn.hutool.core.collection.CollUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import top.flobby.train.common.exception.BusinessException;
+import top.flobby.train.common.exception.BusinessExceptionEnum;
 import top.flobby.train.member.domain.Member;
 import top.flobby.train.member.domain.MemberExample;
 import top.flobby.train.member.mapper.MemberMapper;
@@ -32,7 +34,7 @@ public class MemberService {
         memberExample.createCriteria().andMobileEqualTo(req.getMobile());
         List<Member> list = memberMapper.selectByExample(memberExample);
         if (CollUtil.isNotEmpty(list)) {
-            throw new RuntimeException("手机号已被注册");
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_PHONE_EXIST);
         }
 
         Member member = new Member();
