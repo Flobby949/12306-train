@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import top.flobby.train.member.domain.Member;
 import top.flobby.train.member.domain.MemberExample;
 import top.flobby.train.member.mapper.MemberMapper;
+import top.flobby.train.member.req.MemberRegisterReq;
 
 import java.util.List;
 
@@ -26,16 +27,16 @@ public class MemberService {
         return Math.toIntExact(memberMapper.countByExample(null));
     }
 
-    public long register(String mobile) {
+    public long register(MemberRegisterReq req) {
         MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(mobile);
+        memberExample.createCriteria().andMobileEqualTo(req.getMobile());
         List<Member> list = memberMapper.selectByExample(memberExample);
         if (CollUtil.isNotEmpty(list)) {
             throw new RuntimeException("手机号已被注册");
         }
 
         Member member = new Member();
-        member.setMobile(mobile);
+        member.setMobile(req.getMobile());
         member.setId(System.currentTimeMillis());
         memberMapper.insert(member);
         return member.getId();
