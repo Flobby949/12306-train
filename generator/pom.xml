@@ -11,6 +11,14 @@
 
     <artifactId>generator</artifactId>
 
+    <dependencies>
+        <!-- 模板引擎 freemarker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <!-- mybatis generator 自动生成代码插件 -->
