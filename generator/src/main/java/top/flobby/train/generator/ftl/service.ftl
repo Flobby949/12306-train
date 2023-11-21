@@ -7,7 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import top.flobby.train.common.context.LoginMemberContext;
 import top.flobby.train.common.resp.PageResp;
-import top.flobby.train.common.util.SnowUtil;
+import top.flobby.train.common.utils.SnowUtil;
 import top.flobby.train.member.domain.${Domain};
 import top.flobby.train.member.domain.${Domain}Example;
 import top.flobby.train.member.mapper.${Domain}Mapper;
