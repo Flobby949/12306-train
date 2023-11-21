@@ -77,7 +77,7 @@ const login = () => {
         notification.success({
           description: '登录成功'
         })
-        router.push('/')
+        router.push('/welcome')
         console.log(data.data)
         store.commit('setMember', data.data)
       } else {
