@@ -2,12 +2,13 @@ package top.flobby.train.member.controller;
 
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import top.flobby.train.common.context.LoginMemberContext;
 import top.flobby.train.common.resp.CommonResp;
+import top.flobby.train.common.resp.PageResp;
+import top.flobby.train.member.req.PassengerQueryReq;
 import top.flobby.train.member.req.PassengerSaveReq;
+import top.flobby.train.member.resp.PassengerQueryResp;
 import top.flobby.train.member.service.PassengerService;
 
 /**
@@ -29,5 +30,11 @@ public class PassengerController {
     public CommonResp<Object> save(@RequestBody @Valid PassengerSaveReq req){
         passengerService.save(req);
         return CommonResp.success();
+    }
+
+    @GetMapping("/query")
+    public CommonResp<PageResp<PassengerQueryResp>> query(@Valid PassengerQueryReq req){
+        req.setMemberId(LoginMemberContext.getMemberId());
+        return CommonResp.success(passengerService.query(req));
     }
 }

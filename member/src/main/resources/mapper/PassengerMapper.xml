@@ -71,7 +71,7 @@
   <sql id="Base_Column_List">
     id, member_id, `name`, id_card, `type`, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="top.flobby.train.member.domain.passengerExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="top.flobby.train.member.domain.PassengerExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -95,7 +95,7 @@
     delete from passenger
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="top.flobby.train.member.domain.passengerExample">
+  <delete id="deleteByExample" parameterType="top.flobby.train.member.domain.PassengerExample">
     delete from passenger
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -158,7 +158,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="top.flobby.train.member.domain.passengerExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="top.flobby.train.member.domain.PassengerExample" resultType="java.lang.Long">
     select count(*) from passenger
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

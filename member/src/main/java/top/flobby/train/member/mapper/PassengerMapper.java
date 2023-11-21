@@ -3,7 +3,7 @@ package top.flobby.train.member.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import top.flobby.train.member.domain.Passenger;
-import top.flobby.train.member.domain.passengerExample;
+import top.flobby.train.member.domain.PassengerExample;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import java.util.List;
  */
 @Mapper
 public interface PassengerMapper {
-    long countByExample(passengerExample example);
+    long countByExample(PassengerExample example);
 
-    int deleteByExample(passengerExample example);
+    int deleteByExample(PassengerExample example);
 
     int deleteByPrimaryKey(Long id);
 
@@ -22,13 +22,13 @@ public interface PassengerMapper {
 
     int insertSelective(Passenger row);
 
-    List<Passenger> selectByExample(passengerExample example);
+    List<Passenger> selectByExample(PassengerExample example);
 
     Passenger selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("row") Passenger row, @Param("example") passengerExample example);
+    int updateByExampleSelective(@Param("row") Passenger row, @Param("example") PassengerExample example);
 
-    int updateByExample(@Param("row") Passenger row, @Param("example") passengerExample example);
+    int updateByExample(@Param("row") Passenger row, @Param("example") PassengerExample example);
 
     int updateByPrimaryKeySelective(Passenger row);
 
