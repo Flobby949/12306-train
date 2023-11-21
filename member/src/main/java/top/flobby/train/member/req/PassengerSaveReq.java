@@ -1,7 +1,6 @@
 package top.flobby.train.member.req;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +22,6 @@ import java.util.Date;
 public class PassengerSaveReq {
     private Long id;
 
-    @NotNull(message = "会员id不能为空")
     private Long memberId;
 
     @NotBlank(message = "姓名不能为空")

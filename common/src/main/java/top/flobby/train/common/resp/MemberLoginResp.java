@@ -1,4 +1,4 @@
-package top.flobby.train.member.resp;
+package top.flobby.train.common.resp;
 
 import lombok.Builder;
 import lombok.Data;

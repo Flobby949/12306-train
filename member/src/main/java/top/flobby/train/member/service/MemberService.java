@@ -16,7 +16,7 @@ import top.flobby.train.member.mapper.MemberMapper;
 import top.flobby.train.member.req.MemberLoginReq;
 import top.flobby.train.member.req.MemberRegisterReq;
 import top.flobby.train.member.req.MemberSendCodeReq;
-import top.flobby.train.member.resp.MemberLoginResp;
+import top.flobby.train.common.resp.MemberLoginResp;
 
 import java.util.List;
 
