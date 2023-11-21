@@ -1,4 +1,4 @@
-package top.flobby.train.member.service;
+package top.flobby.train.${module}.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
@@ -8,12 +8,12 @@ import com.github.pagehelper.PageInfo;
 import top.flobby.train.common.context.LoginMemberContext;
 import top.flobby.train.common.resp.PageResp;
 import top.flobby.train.common.utils.SnowUtil;
-import top.flobby.train.member.domain.${Domain};
-import top.flobby.train.member.domain.${Domain}Example;
-import top.flobby.train.member.mapper.${Domain}Mapper;
-import top.flobby.train.member.req.${Domain}QueryReq;
-import top.flobby.train.member.req.${Domain}SaveReq;
-import top.flobby.train.member.resp.${Domain}QueryResp;
+import top.flobby.train.${module}.domain.${Domain};
+import top.flobby.train.${module}.domain.${Domain}Example;
+import top.flobby.train.${module}.mapper.${Domain}Mapper;
+import top.flobby.train.${module}.req.${Domain}QueryReq;
+import top.flobby.train.${module}.req.${Domain}SaveReq;
+import top.flobby.train.${module}.resp.${Domain}QueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,5 +1,7 @@
-package top.flobby.train.${module}.req;
+package top.flobby.train.${module}.resp;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 <#list typeSet as type>
     <#if type=='Date'>
         import java.util.Date;
@@ -10,30 +12,28 @@ package top.flobby.train.${module}.req;
     </#if>
 </#list>
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
-public class ${Domain}SaveReq {
+public class ${Domain}QueryResp {
 
 <#list fieldList as field>
     /**
     * ${field.comment}
     */
     <#if field.javaType=='Date'>
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    </#if>
-    <#if field.name!="id" && field.nameHump!="createdAt" && field.nameHump!="updatedAt">
-        <#if !field.nullAble>
-            <#if field.javaType=='String'>
-                @NotBlank(message = "【${field.nameCn}】不能为空")
-            <#else>
-                @NotNull(message = "【${field.nameCn}】不能为空")
-            </#if>
+        <#if field.type=='time'>
+            @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+        <#elseif field.type=='date'>
+            @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+        <#else>
+            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
         </#if>
+    </#if>
+    <#if field.name=='id' || field.name?ends_with('_id')>
+        @JsonSerialize(using= ToStringSerializer.class)
     </#if>
     private ${field.javaType} ${field.nameHump};
 
 </#list>
+
 <#list fieldList as field>
     public ${field.javaType} get${field.nameBigHump}() {
         return ${field.nameHump};

@@ -1,12 +1,12 @@
-package top.flobby.train.member.controller;
+package top.flobby.train.${module}.controller;
 
 import top.flobby.train.common.context.LoginMemberContext;
 import top.flobby.train.common.resp.CommonResp;
 import top.flobby.train.common.resp.PageResp;
-import top.flobby.train.member.req.${Domain}QueryReq;
-import top.flobby.train.member.req.${Domain}SaveReq;
-import top.flobby.train.member.resp.${Domain}QueryResp;
-import top.flobby.train.member.service.${Domain}Service;
+import top.flobby.train.${module}.req.${Domain}QueryReq;
+import top.flobby.train.${module}.req.${Domain}SaveReq;
+import top.flobby.train.${module}.resp.${Domain}QueryResp;
+import top.flobby.train.${module}.service.${Domain}Service;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
