@@ -9,7 +9,7 @@ import top.flobby.train.common.resp.PageResp;
 import top.flobby.train.member.req.PassengerQueryReq;
 import top.flobby.train.member.req.PassengerSaveReq;
 import top.flobby.train.member.resp.PassengerQueryResp;
-import top.flobby.train.member.service.PassengerService;
+import top.flobby.train.member.service.PassengerService1;
 
 /**
  * @author : Flobby
@@ -21,26 +21,26 @@ import top.flobby.train.member.service.PassengerService;
 
 @RestController
 @RequestMapping("/passenger")
-public class PassengerController {
+public class MyPassengerController {
 
     @Resource
-    private PassengerService passengerService;
+    private PassengerService1 passengerService1;
 
     @PostMapping("/save")
     public CommonResp<Object> save(@RequestBody @Valid PassengerSaveReq req){
-        passengerService.save(req);
+        passengerService1.save(req);
         return CommonResp.success();
     }
 
     @GetMapping("/query")
     public CommonResp<PageResp<PassengerQueryResp>> query(@Valid PassengerQueryReq req){
         req.setMemberId(LoginMemberContext.getMemberId());
-        return CommonResp.success(passengerService.query(req));
+        return CommonResp.success(passengerService1.query(req));
     }
 
     @DeleteMapping("/delete/{id}")
     public CommonResp<Object> delete(@PathVariable Long id){
-        passengerService.delete(id);
+        passengerService1.delete(id);
         return CommonResp.success();
     }
 }

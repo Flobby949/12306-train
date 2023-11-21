@@ -29,7 +29,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MemberService {
+public class MemberService1 {
 
     @Resource
     private MemberMapper memberMapper;

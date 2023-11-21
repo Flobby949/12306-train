@@ -7,7 +7,7 @@ import top.flobby.train.common.resp.CommonResp;
 import top.flobby.train.member.req.MemberLoginReq;
 import top.flobby.train.member.req.MemberRegisterReq;
 import top.flobby.train.member.req.MemberSendCodeReq;
-import top.flobby.train.member.service.MemberService;
+import top.flobby.train.member.service.MemberService1;
 
 /**
  * @author : Flobby
@@ -18,29 +18,29 @@ import top.flobby.train.member.service.MemberService;
 
 @RestController
 @RequestMapping("/member")
-public class MemberController {
+public class MyMemberController {
 
     @Resource
-    private MemberService memberService;
+    private MemberService1 memberService1;
 
     @GetMapping("/count")
     public CommonResp<Integer> count() {
-        return CommonResp.success(memberService.count());
+        return CommonResp.success(memberService1.count());
     }
 
     @PostMapping("/register")
     public CommonResp<Long> register(@RequestBody @Valid MemberRegisterReq req) {
-        return CommonResp.success(memberService.register(req));
+        return CommonResp.success(memberService1.register(req));
     }
 
     @PostMapping("/code")
     public CommonResp<Object> sendCode(@RequestBody @Valid MemberSendCodeReq req) {
-        memberService.sendCode(req);
+        memberService1.sendCode(req);
         return CommonResp.success();
     }
 
     @PostMapping("/login")
     public CommonResp<Object> login(@RequestBody @Valid MemberLoginReq req) {
-        return CommonResp.success(memberService.login(req));
+        return CommonResp.success(memberService1.login(req));
     }
 }

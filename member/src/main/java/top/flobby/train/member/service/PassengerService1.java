@@ -27,7 +27,7 @@ import java.util.List;
  **/
 
 @Service
-public class PassengerService {
+public class PassengerService1 {
 
     @Resource
     private PassengerMapper passengerMapper;
