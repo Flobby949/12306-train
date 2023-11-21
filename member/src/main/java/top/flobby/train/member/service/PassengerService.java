@@ -32,16 +32,32 @@ public class PassengerService {
     @Resource
     private PassengerMapper passengerMapper;
 
+    /**
+     * 保存
+     *
+     * @param req req
+     */
     public void save(PassengerSaveReq req){
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
-        passenger.setId(SnowUtil.getSnowflakeNextId());
-        passenger.setMemberId(LoginMemberContext.getMemberId());
-        passenger.setCreateTime(now);
-        passenger.setUpdateTime(now);
-        passengerMapper.insert(passenger);
+        if (ObjectUtil.isNull(passenger.getId())) {
+            passenger.setId(SnowUtil.getSnowflakeNextId());
+            passenger.setMemberId(LoginMemberContext.getMemberId());
+            passenger.setCreateTime(now);
+            passenger.setUpdateTime(now);
+            passengerMapper.insert(passenger);
+        } else {
+            passenger.setUpdateTime(now);
+            passengerMapper.updateByPrimaryKeySelective(passenger);
+        }
     }
 
+    /**
+     * 查询
+     *
+     * @param req req
+     * @return {@link PageResp}<{@link PassengerQueryResp}>
+     */
     public PageResp<PassengerQueryResp> query(PassengerQueryReq req) {
         PassengerExample example = new PassengerExample();
         PassengerExample.Criteria criteria = example.createCriteria();
@@ -55,5 +71,14 @@ public class PassengerService {
         pageResp.setTotal(pageInfo.getTotal());
         pageResp.setList(BeanUtil.copyToList(passengers, PassengerQueryResp.class));
         return pageResp;
+    }
+
+    /**
+     * 删除
+     *
+     * @param id 编号
+     */
+    public void delete(Long id){
+        passengerMapper.deleteByPrimaryKey(id);
     }
 }

@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /**
  * @author : Flobby
  * @program : train
@@ -31,6 +29,4 @@ public class PassengerSaveReq {
     private String idCard;
     @NotBlank(message = "旅客类型不能为空")
     private String type;
-
-    private Date createTime;
 }
