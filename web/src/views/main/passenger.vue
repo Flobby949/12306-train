@@ -1,5 +1,15 @@
 <template>
-  <a-button type="priamry" @click="showModal">新增</a-button>
+  <p>
+    <a-space>
+      <!-- 刷新 -->
+      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <a-button type="priamry" @click="showModal">新增</a-button>
+    </a-space>
+  </p>
+
+  <a-table :columns="columns" :data-source="passengerData" :pagination="pagination" @change="handlePageChange" />
+
+  <!-- 新增修改对话框 -->
   <a-modal title="乘车人" :visible="visible" @ok="handleOk" ok-text="确认" cancel-text="取消">
     <a-form :form="form" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
       <a-form-item label="姓名">
@@ -20,7 +30,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import { notification } from 'ant-design-vue'
 
@@ -51,6 +61,67 @@ const handleOk = (e) => {
     }
   })
 }
+
+const passengerData = ref([])
+
+const columns = [
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    key: 'name'
+  },
+  {
+    title: '身份证',
+    dataIndex: 'idCard',
+    key: 'idCard'
+  },
+  {
+    title: '乘客类型',
+    dataIndex: 'type',
+    key: 'type'
+  }
+]
+
+const pagination = reactive({
+  current: 1,
+  pageSize: 1,
+  total: 0
+})
+
+const handleQuery = (param) => {
+  if (!param) {
+    param = {
+      page: 1,
+      size: pagination.pageSize
+    }
+  }
+  axios.get('/member/passenger/query', { params: param }).then((res) => {
+    if (res.success) {
+      passengerData.value = res.data.list
+      pagination.total = res.data.total
+      pagination.current = param.page
+    } else {
+      notification.error({
+        message: '失败',
+        description: res.message
+      })
+    }
+  })
+}
+
+const handlePageChange = (page) => {
+  handleQuery({
+    page: page.current,
+    size: page.pageSize
+  })
+}
+
+onMounted(() => {
+  handleQuery({
+    page: 1,
+    size: pagination.pageSize
+  })
+})
 </script>
 
 <style scoped></style>

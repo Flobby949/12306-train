@@ -1,11 +1,6 @@
 <template>
   <a-layout-sider width="200" style="background: #fff">
-    <a-menu
-      v-model:selectedKeys="selectedKeys2"
-      v-model:openKeys="openKeys"
-      mode="inline"
-      :style="{ height: '100%', borderRight: 0 }"
-    >
+    <a-menu v-model:selectedKeys="selectedKeys" mode="inline" :style="{ height: '100%', borderRight: 0 }">
       <a-menu-item key="/welcome">
         <CoffeeOutlined />
         <router-link to="/welcome">欢迎</router-link>
