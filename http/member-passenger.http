@@ -1,0 +1,14 @@
+### 添加乘客
+POST http://localhost:8000/member/passenger/save
+Content-Type: application/json
+token: {{token}}
+
+{
+  "memberId": 1,
+  "name": "flobby",
+  "idCard": "320506200108282222",
+  "type": "1"
+}
+
+
+###

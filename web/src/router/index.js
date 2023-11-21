@@ -5,10 +5,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    component: () => import('../views/main.vue'),
-    meta: {
-      loginRequire: true
-    }
+    component: () => import('../views/main.vue')
   },
   {
     path: '/login',

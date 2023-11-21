@@ -24,8 +24,8 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/count")
-    public int count() {
-        return memberService.count();
+    public CommonResp<Integer> count() {
+        return CommonResp.success(memberService.count());
     }
 
     @PostMapping("/register")

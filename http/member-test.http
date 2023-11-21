@@ -34,3 +34,7 @@ Content-Type: application/json
   "mobile": "18962521753",
   "code": "8888"
 }
+
+> {%
+ client.global.set("token", response.body.data.token)
+ %}

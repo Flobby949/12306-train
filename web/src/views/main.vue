@@ -17,7 +17,10 @@
             minHeight: '280px'
           }"
         >
-          会员总数:{{ count }}
+          <a-select v-model="choose" style="width: 120px" @change="print" placeholder="请选择">
+            <a-select-option v-for="item in enums" :key="item.type" :value="item.type">{{ item.desc }}</a-select-option>
+          </a-select>
+          {{ choose }}
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -39,7 +42,26 @@ const getCount = () => {
   })
 }
 
-getCount()
+// getCount()
+const choose = ref(1)
+const enums = [
+  {
+    type: 1,
+    desc: '计算机类'
+  },
+  {
+    type: 2,
+    desc: '文学类'
+  },
+  {
+    type: 3,
+    desc: '历史类'
+  }
+]
+const print = (e) => {
+  console.log(e)
+  choose.value = e
+}
 </script>
 
 <style scoped>

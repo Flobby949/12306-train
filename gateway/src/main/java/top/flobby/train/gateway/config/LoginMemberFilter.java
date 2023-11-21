@@ -24,12 +24,12 @@ public class LoginMemberFilter implements Ordered, GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
-        // 排除不需要拦截的请求
+        // TODO 排除不需要拦截的请求
         if (path.contains("/admin")
-                || path.contains("/hello")
+                || path.contains("/test")
                 || path.contains("/member/member/login")
                 || path.contains("/member/member/register")
-                || path.contains("/member/member/send-code")) {
+                || path.contains("/member/member/code")) {
             log.info("不需要登录验证：{}", path);
             return chain.filter(exchange);
         } else {
