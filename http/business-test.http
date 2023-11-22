@@ -1,0 +1,5 @@
+### 测试接口
+GET http://localhost:8000/business/test
+Accept: application/json
+
+###

@@ -24,7 +24,8 @@ public class ServerGenerator {
     static String servicePath = "[module]/src/main/java/top/flobby/train/[module]/service/";
     static String serverPath = "[module]/src/main/java/top/flobby/train/[module]/";
     static String pomPath = "generator/pom.xml";
-    static String vuePath = "web/src/views/main/";
+    static String vueWebPath = "web/src/views/main/";
+    static String vueAdminPath = "admin/src/views/main/";
     static boolean readOnly = false;
 
     public static void main(String[] args) throws Exception {
@@ -87,7 +88,7 @@ public class ServerGenerator {
         gen(Domain, param, "req", "queryReq");
         gen(Domain, param, "resp", "queryResp");
 
-        genVue(do_main, param);
+        // genVue(do_main, param);
     }
 
     /**
@@ -124,8 +125,8 @@ public class ServerGenerator {
 
     private static void genVue(String do_main, Map<String, Object> param) throws IOException, TemplateException {
         FreemarkerUtil.initConfig("vue.ftl");
-        new File(vuePath).mkdirs();
-        String fileName = vuePath + do_main + ".vue";
+        new File(vueWebPath).mkdirs();
+        String fileName = vueWebPath + do_main + ".vue";
         System.out.println("开始生成：" + fileName);
         FreemarkerUtil.generator(fileName, param);
     }
