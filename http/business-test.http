@@ -2,4 +2,8 @@
 GET http://localhost:8000/business/test
 Accept: application/json
 
-###
+### 获取全部车次
+GET http://localhost:8000/business/admin/train/query-all
+Accept: application/json
+
+
