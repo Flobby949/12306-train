@@ -25,6 +25,12 @@
           火车管理
         </router-link>
       </a-menu-item>
+      <a-menu-item key="/trainStation">
+        <router-link to="/trainStation">
+          <car-outlined />
+          火车站管理
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>
