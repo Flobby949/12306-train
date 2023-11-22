@@ -9,3 +9,10 @@ TRAIN_TYPE_ARRAY = [
   { code: 'D', desc: '动车', priceMultiplier: 1 },
   { code: 'K', desc: '快车', priceMultiplier: 0.8 }
 ]
+
+SEAT_TYPE_ARRAY = [
+  { code: '1', desc: '一等座', priceMultiplier: 0.4 },
+  { code: '2', desc: '二等座', priceMultiplier: 0.3 },
+  { code: '3', desc: '硬卧', priceMultiplier: 0.5 },
+  { code: '4', desc: '软卧', priceMultiplier: 0.6 }
+]
