@@ -1,51 +1,47 @@
 <template>
   <p>
     <a-space>
-      <!-- 刷新 -->
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
-
-  <a-table :columns="columns" :data-source="passengerData" :pagination="pagination" @change="handlePageChange">
+  <a-table
+    :dataSource="passengers"
+    :columns="columns"
+    :pagination="pagination"
+    @change="handleTableChange"
+    :loading="loading"
+  >
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
         <a-space>
-          <a-space>
-            <!-- 删除确认 -->
-            <a-popconfirm
-              title="删除后不可恢复，是否删除"
-              ok-text="确认"
-              cancel-text="取消"
-              @confirm="onDelete(record)"
-            >
-              <a style="color: red">删除</a>
-            </a-popconfirm>
-          </a-space>
+          <a-popconfirm title="删除后不可恢复，确认删除?" @confirm="onDelete(record)" ok-text="确认" cancel-text="取消">
+            <a style="color: red">删除</a>
+          </a-popconfirm>
           <a @click="onEdit(record)">编辑</a>
         </a-space>
       </template>
       <template v-else-if="column.dataIndex === 'type'">
-        <span v-for="item in PASSENGER_TYPE_ARRAY" :key="item.key">
-          <span v-if="item.key === record.type">{{ item.label }}</span>
+        <span v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code">
+          <span v-if="item.code === record.type">
+            {{ item.desc }}
+          </span>
         </span>
       </template>
     </template>
   </a-table>
-
-  <!-- 新增修改对话框 -->
-  <a-modal title="乘车人" :visible="visible" @ok="handleOk" @cancel="visible = false" ok-text="确认" cancel-text="取消">
-    <a-form :form="form" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+  <a-modal v-model:visible="visible" title="乘车人" @ok="handleOk" ok-text="确认" cancel-text="取消">
+    <a-form :model="passenger" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
       <a-form-item label="姓名">
         <a-input v-model:value="passenger.name" />
       </a-form-item>
       <a-form-item label="身份证">
         <a-input v-model:value="passenger.idCard" />
       </a-form-item>
-      <a-form-item label="乘客类型">
+      <a-form-item label="旅客类型">
         <a-select v-model:value="passenger.type">
-          <a-select-option v-for="item in PASSENGER_TYPE_ARRAY" :key="item.key" :value="item.key">
-            {{ item.label }}
+          <a-select-option v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code" :value="item.code">
+            {{ item.desc }}
           </a-select-option>
         </a-select>
       </a-form-item>
@@ -54,49 +50,35 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import axios from 'axios'
+import { ref, onMounted } from 'vue'
 import { notification } from 'ant-design-vue'
+import axios from 'axios'
 
 const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY
-
 const visible = ref(false)
-const onAdd = () => {
-  visible.value = true
-}
-
-const onEdit = (record) => {
-  passenger.value = window.Tool.copy(record)
-  visible.value = true
-}
-
 const passenger = ref({
-  name: '',
-  idCard: '',
-  type: ''
+  id: undefined,
+  memberId: undefined,
+  name: undefined,
+  idCard: undefined,
+  type: undefined,
+  createTime: undefined,
+  updateTime: undefined
 })
-
-const handleOk = () => {
-  axios.post('/member/passenger/save', passenger.value).then((res) => {
-    if (res.success) {
-      notification.success({
-        message: '成功',
-        description: '新增成功'
-      })
-      handleQuery()
-      visible.value = false
-    } else {
-      notification.error({
-        message: '失败',
-        description: res.message
-      })
-    }
-  })
-}
-
-const passengerData = ref([])
-
+const passengers = ref([])
+// 分页的三个属性名是固定的
+const pagination = ref({
+  total: 0,
+  current: 1,
+  pageSize: 10
+})
+const loading = ref(false)
 const columns = [
+  {
+    title: '会员id',
+    dataIndex: 'memberId',
+    key: 'memberId'
+  },
   {
     title: '姓名',
     dataIndex: 'name',
@@ -108,7 +90,7 @@ const columns = [
     key: 'idCard'
   },
   {
-    title: '乘客类型',
+    title: '旅客类型',
     dataIndex: 'type',
     key: 'type'
   },
@@ -118,11 +100,44 @@ const columns = [
   }
 ]
 
-const pagination = ref({
-  current: 1,
-  pageSize: 10,
-  total: 0
-})
+const onAdd = () => {
+  passenger.value = {}
+  visible.value = true
+}
+
+const onEdit = (record) => {
+  passenger.value = window.Tool.copy(record)
+  visible.value = true
+}
+
+const onDelete = (record) => {
+  axios.delete('/member/passenger/delete/' + record.id).then((data) => {
+    if (data.success) {
+      notification.success({ description: '删除成功！' })
+      handleQuery({
+        page: pagination.value.current,
+        size: pagination.value.pageSize
+      })
+    } else {
+      notification.error({ description: data.message })
+    }
+  })
+}
+
+const handleOk = () => {
+  axios.post('/member/passenger/save', passenger.value).then((data) => {
+    if (data.success) {
+      notification.success({ description: '保存成功！' })
+      visible.value = false
+      handleQuery({
+        page: pagination.value.current,
+        size: pagination.value.pageSize
+      })
+    } else {
+      notification.error({ description: data.message })
+    }
+  })
+}
 
 const handleQuery = (param) => {
   if (!param) {
@@ -131,44 +146,31 @@ const handleQuery = (param) => {
       size: pagination.value.pageSize
     }
   }
-  axios.get('/member/passenger/query', { params: param }).then((res) => {
-    if (res.success) {
-      passengerData.value = res.data.list
-      pagination.value.total = res.data.total
-      pagination.value.current = param.page
-    } else {
-      notification.error({
-        message: '失败',
-        description: res.message
-      })
-    }
-  })
+  loading.value = true
+  axios
+    .get('/member/passenger/query-list', {
+      params: {
+        page: param.page,
+        size: param.size
+      }
+    })
+    .then((data) => {
+      loading.value = false
+      if (data.success) {
+        passengers.value = data.data.list
+        // 设置分页控件的值
+        pagination.value.current = param.page
+        pagination.value.total = data.data.total
+      } else {
+        notification.error({ description: data.message })
+      }
+    })
 }
 
-const handlePageChange = (page) => {
+const handleTableChange = (pagination) => {
   handleQuery({
-    page: page.current,
-    size: page.pageSize
-  })
-}
-
-const onDelete = (record) => {
-  axios.delete('/member/passenger/delete/' + record.id).then((res) => {
-    if (res.success) {
-      notification.success({
-        message: '成功',
-        description: '删除成功'
-      })
-      handleQuery({
-        page: pagination.value.current,
-        size: pagination.value.pageSize
-      })
-    } else {
-      notification.error({
-        message: '失败',
-        description: res.message
-      })
-    }
+    page: pagination.current,
+    size: pagination.pageSize
   })
 }
 
@@ -179,5 +181,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style scoped></style>

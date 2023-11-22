@@ -177,7 +177,7 @@
                 ${domain}s.value = data.data.list;
                 // 设置分页控件的值
                 pagination.value.current = param.page;
-                pagination.value.total = data.content.total;
+                pagination.value.total = data.data.total;
             } else {
                 notification.error({description: data.message});
             }
