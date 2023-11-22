@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import top.flobby.train.business.req.TrainQueryReq;
 import top.flobby.train.business.req.TrainSaveReq;
 import top.flobby.train.business.resp.TrainQueryResp;
+import top.flobby.train.business.service.TrainSeatService;
 import top.flobby.train.business.service.TrainService;
 import top.flobby.train.common.resp.CommonResp;
 import top.flobby.train.common.resp.PageResp;
@@ -18,6 +19,8 @@ public class TrainAdminController {
 
     @Resource
     private TrainService trainService;
+    @Resource
+    private TrainSeatService trainSeatService;
 
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody TrainSaveReq req) {
@@ -42,4 +45,9 @@ public class TrainAdminController {
         return CommonResp.success(trainService.queryAll());
     }
 
+    @GetMapping("gen-seat/{trainCode}")
+    public CommonResp<Object> genSeat(@PathVariable String trainCode) {
+        trainSeatService.genTrainSeat(trainCode);
+        return CommonResp.success();
+    }
 }

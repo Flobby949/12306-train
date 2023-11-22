@@ -1,7 +1,10 @@
 package top.flobby.train.business.domain;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class TrainSeat {
     private Long id;
 

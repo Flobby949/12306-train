@@ -74,4 +74,17 @@ public class TrainCarriageService {
         trainCarriageMapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 按车次查询
+     *
+     * @param trainCode 列车代码
+     * @return {@link List}<{@link TrainCarriage}>
+     */
+    public List<TrainCarriage> selectByTrainCode(String trainCode) {
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        trainCarriageExample.setOrderByClause("`index` asc");
+        TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        return trainCarriageMapper.selectByExample(trainCarriageExample);
+    }
 }

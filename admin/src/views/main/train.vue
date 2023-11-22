@@ -19,6 +19,14 @@
             <a style="color: red">删除</a>
           </a-popconfirm>
           <a @click="onEdit(record)">编辑</a>
+          <a-popconfirm
+            title="生成座位将删除原有记录，是否生成座位?"
+            @confirm="genSeat(record)"
+            ok-text="确认"
+            cancel-text="取消"
+          >
+            <a>生成座位</a>
+          </a-popconfirm>
         </a-space>
       </template>
       <template v-else-if="column.dataIndex === 'type'">
@@ -244,4 +252,14 @@ watch(
   },
   { immediate: true }
 )
+
+const genSeat = (record) => {
+  axios.get('/business/admin/train/gen-seat/' + record.code).then((data) => {
+    if (data.success) {
+      notification.success({ description: '生成成功！' })
+    } else {
+      notification.error({ description: data.message })
+    }
+  })
+}
 </script>

@@ -2,6 +2,10 @@ package top.flobby.train.business.enums;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 /**
  * @author : Flobby
  * @program : train
@@ -34,5 +38,19 @@ public enum SeatColEnum {
         this.code = code;
         this.desc = desc;
         this.type = type;
+    }
+
+    /**
+     * 根据车箱的座位类型，筛选出所有的列，比如车箱类型是一等座，则筛选出columnList={ACDF}
+     */
+    public static List<SeatColEnum> getColsByType(String seatType) {
+        List<SeatColEnum> colList = new ArrayList<>();
+        EnumSet<SeatColEnum> seatColEnums = EnumSet.allOf(SeatColEnum.class);
+        for (SeatColEnum anEnum : seatColEnums) {
+            if (seatType.equals(anEnum.getType())) {
+                colList.add(anEnum);
+            }
+        }
+        return colList;
     }
 }
