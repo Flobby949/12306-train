@@ -37,10 +37,10 @@
           火车车厢管理
         </router-link>
       </a-menu-item>
-      <a-menu-item key="/trainStation">
-        <router-link to="/trainStation">
+      <a-menu-item key="/trainSeat">
+        <router-link to="/trainSeat">
           <car-outlined />
-          火车站管理
+          火车座位管理
         </router-link>
       </a-menu-item>
     </a-menu>
