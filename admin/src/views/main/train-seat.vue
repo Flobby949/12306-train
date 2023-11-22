@@ -1,7 +1,8 @@
 <template>
   <p>
     <a-space>
-      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <train-select v-model="params.trainCode" width="200px"></train-select>
+      <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
@@ -96,6 +97,9 @@ const pagination = ref({
   current: 1,
   pageSize: 10
 })
+const params = ref({
+  trainCode: null
+})
 const loading = ref(false)
 const columns = [
   {
@@ -185,7 +189,8 @@ const handleQuery = (param) => {
     .get('/business/admin/train-seat/query-list', {
       params: {
         page: param.page,
-        size: param.size
+        size: param.size,
+        trainCode: params.value.trainCode
       }
     })
     .then((data) => {
