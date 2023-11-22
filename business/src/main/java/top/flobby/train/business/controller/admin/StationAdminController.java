@@ -1,15 +1,14 @@
 package top.flobby.train.business.controller.admin;
 
-import top.flobby.train.common.context.LoginMemberContext;
-import top.flobby.train.common.resp.CommonResp;
-import top.flobby.train.common.resp.PageResp;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 import top.flobby.train.business.req.StationQueryReq;
 import top.flobby.train.business.req.StationSaveReq;
 import top.flobby.train.business.resp.StationQueryResp;
 import top.flobby.train.business.service.StationService;
-import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
+import top.flobby.train.common.resp.CommonResp;
+import top.flobby.train.common.resp.PageResp;
 
 @RestController
 @RequestMapping("/admin/station")
@@ -34,6 +33,11 @@ public class StationAdminController {
     public CommonResp<Object> delete(@PathVariable Long id) {
         stationService.delete(id);
         return CommonResp.success();
+    }
+
+    @GetMapping("/query-all")
+    public CommonResp<Object> queryAll() {
+        return CommonResp.success(stationService.queryAll());
     }
 
 }
