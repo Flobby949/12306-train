@@ -26,11 +26,7 @@
   <a-modal v-model:visible="visible" title="火车车站" @ok="handleOk" ok-text="确认" cancel-text="取消">
     <a-form :model="trainStation" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
-        <a-select v-model:value="trainStation.trainCode" show-search :filter-option="filterTrainCodeOption">
-          <a-select-option v-for="item in trainCodeList" :key="item.id" :value="item.code">
-            {{ item.code }} | {{ item.start }} ~ {{ item.end }}
-          </a-select-option>
-        </a-select>
+        <train-select v-model="trainStation.trainCode"></train-select>
       </a-form-item>
       <a-form-item label="站序">
         <a-input v-model:value="trainStation.index" />
@@ -62,6 +58,7 @@ import { ref, onMounted, watch } from 'vue'
 import { notification } from 'ant-design-vue'
 import axios from 'axios'
 import { pinyin } from 'pinyin-pro'
+import trainSelect from '@/components/train-select.vue'
 const visible = ref(false)
 const trainStation = ref({
   id: undefined,
@@ -210,7 +207,6 @@ onMounted(() => {
     page: 1,
     size: pagination.value.pageSize
   })
-  quertTrainCode()
 })
 
 watch(
@@ -224,19 +220,4 @@ watch(
   },
   { immediate: true }
 )
-
-const trainCodeList = ref([])
-const quertTrainCode = () => {
-  axios.get('/business/admin/train/query-all').then((data) => {
-    if (data.success) {
-      trainCodeList.value = data.data
-    } else {
-      notification.error({ description: data.message })
-    }
-  })
-}
-
-const filterTrainCodeOption = (input, option) => {
-  return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
-}
 </script>
