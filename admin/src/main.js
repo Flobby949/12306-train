@@ -32,8 +32,8 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   function (response) {
-    console.log('返回结果：', response)
-    return response
+    console.log('返回结果：', response.data)
+    return response.data
   },
   (error) => {
     console.log('返回错误：', error)
