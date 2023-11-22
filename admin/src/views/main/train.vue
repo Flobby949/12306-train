@@ -41,7 +41,7 @@
   <a-modal v-model:visible="visible" title="车次" @ok="handleOk" ok-text="确认" cancel-text="取消">
     <a-form :model="train" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
       <a-form-item label="车次编号">
-        <a-input v-model:value="train.code" />
+        <a-input v-model:value="train.code" :disabled="!!train.id" />
       </a-form-item>
       <a-form-item label="车次类型">
         <a-select v-model:value="train.type">
@@ -51,7 +51,7 @@
         </a-select>
       </a-form-item>
       <a-form-item label="始发站">
-        <a-input v-model:value="train.start" />
+        <station-select v-model:value="train.start" width="200px" />
       </a-form-item>
       <a-form-item label="始发站拼音">
         <a-input v-model:value="train.startPinyin" disabled />
@@ -60,7 +60,7 @@
         <a-time-picker v-model:value="train.startTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
       </a-form-item>
       <a-form-item label="终点站">
-        <a-input v-model:value="train.end" />
+        <station-select v-model:value="train.end" width="200px" />
       </a-form-item>
       <a-form-item label="终点站拼音">
         <a-input v-model:value="train.endPinyin" disabled />
@@ -77,7 +77,7 @@ import { ref, onMounted, watch } from 'vue'
 import { notification } from 'ant-design-vue'
 import axios from 'axios'
 import { pinyin } from 'pinyin-pro'
-
+import stationSelect from '@/components/station-select.vue'
 const TRAIN_TYPE_ARRAY = window.TRAIN_TYPE_ARRAY
 const visible = ref(false)
 const train = ref({

@@ -1,10 +1,13 @@
 package top.flobby.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import top.flobby.train.common.exception.BusinessException;
+import top.flobby.train.common.exception.BusinessExceptionEnum;
 import top.flobby.train.common.resp.PageResp;
 import top.flobby.train.common.utils.SnowUtil;
 import top.flobby.train.business.domain.Station;
@@ -36,6 +39,10 @@ public class StationService {
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
+            // 保存之前，唯一性校验
+            if (selectByUniqueKey(station.getName())) {
+                throw new BusinessException(BusinessExceptionEnum.TRAIN_STATION_EXIST);
+            }
             station.setId(SnowUtil.getSnowflakeNextId());
             station.setCreateTime(now);
             station.setUpdateTime(now);
@@ -77,5 +84,18 @@ public class StationService {
         stationExample.setOrderByClause("name_pinyin asc");
         List<Station> stationList = stationMapper.selectByExample(stationExample);
         return BeanUtil.copyToList(stationList, StationQueryResp.class);
+    }
+
+    /**
+     * 唯一性校验
+     *
+     * @param name 名字
+     * @return boolean true：存在 false：不存在
+     */
+    private boolean selectByUniqueKey(String name) {
+        StationExample stationExample = new StationExample();
+        stationExample.createCriteria().andNameEqualTo(name);
+        List<Station> stationList = stationMapper.selectByExample(stationExample);
+        return CollUtil.isNotEmpty(stationList);
     }
 }

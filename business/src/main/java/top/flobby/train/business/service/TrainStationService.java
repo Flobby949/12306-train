@@ -1,10 +1,13 @@
 package top.flobby.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import top.flobby.train.common.exception.BusinessException;
+import top.flobby.train.common.exception.BusinessExceptionEnum;
 import top.flobby.train.common.resp.PageResp;
 import top.flobby.train.common.utils.SnowUtil;
 import top.flobby.train.business.domain.TrainStation;
@@ -36,6 +39,14 @@ public class TrainStationService {
         DateTime now = DateTime.now();
         TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
         if (ObjectUtil.isNull(trainStation.getId())) {
+            // 站序唯一性校验
+            if (selectIndexByUnique(trainStation.getTrainCode(), trainStation.getIndex())) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR);
+            }
+            // 站台唯一性校验
+            if (selectStationByUnique(trainStation.getTrainCode(), trainStation.getName())) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_NAME_UNIQUE_ERROR);
+            }
             trainStation.setId(SnowUtil.getSnowflakeNextId());
             trainStation.setCreateTime(now);
             trainStation.setUpdateTime(now);
@@ -74,4 +85,33 @@ public class TrainStationService {
         trainStationMapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 站序唯一性校验
+     *
+     * @param trainCode 列车代码
+     * @param index     站序
+     * @return boolean true:存在 false:不存在
+     */
+    private boolean selectIndexByUnique(String trainCode, Integer index) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode).andIndexEqualTo(index);
+        List<TrainStation> trainStationList = trainStationMapper.selectByExample(trainStationExample);
+        return CollUtil.isNotEmpty(trainStationList);
+    }
+
+    /**
+     * 站台唯一性校验
+     *
+     * @param trainCode 列车代码
+     * @param name      站台名称
+     * @return boolean
+     */
+    private boolean selectStationByUnique(String trainCode, String name) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode).andNameEqualTo(name);
+        List<TrainStation> trainStationList = trainStationMapper.selectByExample(trainStationExample);
+        return CollUtil.isNotEmpty(trainStationList);
+    }
 }

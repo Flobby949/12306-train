@@ -1,22 +1,26 @@
 package top.flobby.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import top.flobby.train.common.resp.PageResp;
-import top.flobby.train.common.utils.SnowUtil;
-import top.flobby.train.business.domain.TrainCarriage;
-import top.flobby.train.business.domain.TrainCarriageExample;
-import top.flobby.train.business.mapper.TrainCarriageMapper;
-import top.flobby.train.business.req.TrainCarriageQueryReq;
-import top.flobby.train.business.req.TrainCarriageSaveReq;
-import top.flobby.train.business.resp.TrainCarriageQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import top.flobby.train.business.domain.TrainCarriage;
+import top.flobby.train.business.domain.TrainCarriageExample;
+import top.flobby.train.business.enums.SeatColEnum;
+import top.flobby.train.business.mapper.TrainCarriageMapper;
+import top.flobby.train.business.req.TrainCarriageQueryReq;
+import top.flobby.train.business.req.TrainCarriageSaveReq;
+import top.flobby.train.business.resp.TrainCarriageQueryResp;
+import top.flobby.train.common.exception.BusinessException;
+import top.flobby.train.common.exception.BusinessExceptionEnum;
+import top.flobby.train.common.resp.PageResp;
+import top.flobby.train.common.utils.SnowUtil;
 
 import java.util.List;
 
@@ -35,7 +39,15 @@ public class TrainCarriageService {
     public void save(TrainCarriageSaveReq req) {
         DateTime now = DateTime.now();
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
+        // 自动计算列数和总座位数
+        int colCount = SeatColEnum.getColsByType(req.getSeatType()).size();
+        trainCarriage.setColCount(colCount);
+        trainCarriage.setSeatCount(colCount * req.getRowCount());
         if (ObjectUtil.isNull(trainCarriage.getId())) {
+            // 厢号唯一性校验
+            if (selectIndexByUnique(trainCarriage.getTrainCode(), trainCarriage.getIndex())) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
+            }
             trainCarriage.setId(SnowUtil.getSnowflakeNextId());
             trainCarriage.setCreateTime(now);
             trainCarriage.setUpdateTime(now);
@@ -86,5 +98,20 @@ public class TrainCarriageService {
         TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
         criteria.andTrainCodeEqualTo(trainCode);
         return trainCarriageMapper.selectByExample(trainCarriageExample);
+    }
+
+    /**
+     * 唯一性校验
+     *
+     * @param trainCode 列车代码
+     * @param index     车厢号
+     * @return boolean
+     */
+    private boolean selectIndexByUnique(String trainCode, Integer index) {
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode).andIndexEqualTo(index);
+        List<TrainCarriage> trainCarriageList = trainCarriageMapper.selectByExample(trainCarriageExample);
+        return CollUtil.isNotEmpty(trainCarriageList);
     }
 }

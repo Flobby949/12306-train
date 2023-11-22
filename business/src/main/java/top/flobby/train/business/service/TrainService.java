@@ -1,22 +1,25 @@
 package top.flobby.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import top.flobby.train.common.resp.PageResp;
-import top.flobby.train.common.utils.SnowUtil;
+import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import top.flobby.train.business.domain.Train;
 import top.flobby.train.business.domain.TrainExample;
 import top.flobby.train.business.mapper.TrainMapper;
 import top.flobby.train.business.req.TrainQueryReq;
 import top.flobby.train.business.req.TrainSaveReq;
 import top.flobby.train.business.resp.TrainQueryResp;
-import jakarta.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import top.flobby.train.common.exception.BusinessException;
+import top.flobby.train.common.exception.BusinessExceptionEnum;
+import top.flobby.train.common.resp.PageResp;
+import top.flobby.train.common.utils.SnowUtil;
 
 import java.util.List;
 
@@ -36,6 +39,10 @@ public class TrainService {
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(req, Train.class);
         if (ObjectUtil.isNull(train.getId())) {
+            // 保存之前，唯一性校验
+            if (selectByUniqueKey(train.getCode())) {
+                throw new BusinessException(BusinessExceptionEnum.TRAIN_CODE_EXIST);
+            }
             train.setId(SnowUtil.getSnowflakeNextId());
             train.setCreateTime(now);
             train.setUpdateTime(now);
@@ -77,5 +84,19 @@ public class TrainService {
         trainExample.setOrderByClause("code asc");
         List<Train> trainList = trainMapper.selectByExample(trainExample);
         return BeanUtil.copyToList(trainList, TrainQueryResp.class);
+    }
+
+    /**
+     * 唯一性校验
+     *
+     * @param code 车次
+     * @return boolean true-存在 false-不存在
+     */
+    private boolean selectByUniqueKey(String code) {
+        TrainExample trainExample = new TrainExample();
+        TrainExample.Criteria criteria = trainExample.createCriteria();
+        criteria.andCodeEqualTo(code);
+        List<Train> trainList = trainMapper.selectByExample(trainExample);
+        return CollUtil.isNotEmpty(trainList);
     }
 }
