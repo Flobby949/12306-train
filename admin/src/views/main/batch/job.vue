@@ -8,6 +8,14 @@
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'operation'">
           <a-space>
+            <a-popconfirm
+              title="手动执行会立即执行一次，确定执行？"
+              ok-text="是"
+              cancel-text="否"
+              @confirm="handleRun(record)"
+            >
+              <a-button type="primary" size="small"> 手动执行 </a-button>
+            </a-popconfirm>
             <a-popconfirm title="确定重启？" ok-text="是" cancel-text="否" @confirm="handleResume(record)">
               <a-button v-show="record.state === 'PAUSED' || record.state === 'ERROR'" type="primary" size="small">
                 重启
@@ -201,6 +209,19 @@ const handleResume = (record) => {
       modalVisible.value = false
       notification.success({ description: '重启成功！' })
       handleQuery()
+    } else {
+      notification.error({ description: data.message })
+    }
+  })
+}
+
+/**
+ * 手动执行
+ */
+const handleRun = (record) => {
+  axios.post('/batch/admin/job/run', record).then((data) => {
+    if (data.success) {
+      notification.success({ description: '手动执行成功！' })
     } else {
       notification.error({ description: data.message })
     }

@@ -1,51 +1,51 @@
 <template>
   <a-layout-sider width="200" style="background: #fff">
-    <a-menu v-model:selectedKeys="selectedKeys" mode="inline" :style="{ height: '100%', borderRight: 0 }">
+    <a-menu
+      v-model:selectedKeys="selectedKeys"
+      :openKeys="['batch', 'base']"
+      mode="inline"
+      :style="{ height: '100%', borderRight: 0 }"
+    >
       <a-menu-item key="/welcome">
-        <router-link to="/welcome">
-          <coffee-outlined />
-          欢迎
-        </router-link>
+        <router-link to="/welcome"> <coffee-outlined /> 欢迎 </router-link>
       </a-menu-item>
       <a-menu-item key="/about">
-        <router-link to="/about">
-          <user-outlined />
-          关于
-        </router-link>
+        <router-link to="/about"> <user-outlined /> 关于 </router-link>
       </a-menu-item>
-      <a-menu-item key="/station">
-        <router-link to="/station">
-          <home-outlined />
-          车站管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/train">
-        <router-link to="/train">
-          <car-outlined />
-          火车管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/trainStation">
-        <router-link to="/trainStation">
-          <car-outlined />
-          火车站管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/TrainCarriage">
-        <router-link to="/TrainCarriage">
-          <car-outlined />
-          火车车厢管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/trainSeat">
-        <router-link to="/trainSeat">
-          <car-outlined />
-          火车座位管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/batch/job">
-        <router-link to="/batch/job"> <MenuUnfoldOutlined /> 任务管理 </router-link>
-      </a-menu-item>
+      <a-sub-menu key="batch">
+        <template #title>
+          <span>
+            <UnorderedListOutlined />
+            跑批管理
+          </span>
+        </template>
+        <a-menu-item key="/batch/job">
+          <router-link to="/batch/job"> <MenuUnfoldOutlined /> 任务管理 </router-link>
+        </a-menu-item>
+      </a-sub-menu>
+      <a-sub-menu key="base">
+        <template #title>
+          <span>
+            <UnorderedListOutlined />
+            基础数据
+          </span>
+        </template>
+        <a-menu-item key="/base/station">
+          <router-link to="/base/station"> <car-outlined /> 车站管理 </router-link>
+        </a-menu-item>
+        <a-menu-item key="/base/train">
+          <router-link to="/base/train"> <car-outlined /> 火车管理 </router-link>
+        </a-menu-item>
+        <a-menu-item key="/base/train-station">
+          <router-link to="/base/train-station"> <car-outlined /> 火车车站 </router-link>
+        </a-menu-item>
+        <a-menu-item key="/base/train-carriage">
+          <router-link to="/base/train-carriage"> <car-outlined /> 火车车厢 </router-link>
+        </a-menu-item>
+        <a-menu-item key="/base/train-seat">
+          <router-link to="/base/train-seat"> <car-outlined /> 火车座位 </router-link>
+        </a-menu-item>
+      </a-sub-menu>
     </a-menu>
   </a-layout-sider>
 </template>
@@ -66,5 +66,3 @@ watch(
   { immediate: true }
 )
 </script>
-
-<style scoped></style>
