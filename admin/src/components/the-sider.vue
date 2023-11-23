@@ -43,6 +43,9 @@
           火车座位管理
         </router-link>
       </a-menu-item>
+      <a-menu-item key="/batch/job">
+        <router-link to="/batch/job"> <MenuUnfoldOutlined /> 任务管理 </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>
