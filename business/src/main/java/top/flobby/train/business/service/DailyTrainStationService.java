@@ -2,6 +2,7 @@ package top.flobby.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ public class DailyTrainStationService {
 
     @Resource
     private DailyTrainStationMapper dailyTrainStationMapper;
+    @Resource
+    private TrainStationService trainStationService;
 
     public void save(DailyTrainStationSaveReq req) {
         DateTime now = DateTime.now();
@@ -77,4 +81,22 @@ public class DailyTrainStationService {
         dailyTrainStationMapper.deleteByPrimaryKey(id);
     }
 
+    public void genDaily(Date date, String trainCode) {
+        LOG.info("开始生成 [{}] 车次 [{}] 车站信息", DateUtil.formatDate(date),trainCode);
+        // 删除原有数据
+        DailyTrainStationExample dailyTrainStationExample = new DailyTrainStationExample();
+        dailyTrainStationExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+        dailyTrainStationMapper.deleteByExample(dailyTrainStationExample);
+
+        // 查询所有车站信息
+        trainStationService.selectStationByTrainCode(trainCode).forEach(trainStation -> {
+            DailyTrainStation dailyTrainStation = BeanUtil.copyProperties(trainStation, DailyTrainStation.class);
+            dailyTrainStation.setId(SnowUtil.getSnowflakeNextId());
+            dailyTrainStation.setDate(date);
+            dailyTrainStation.setCreateTime(DateTime.now());
+            dailyTrainStation.setUpdateTime(DateTime.now());
+            dailyTrainStationMapper.insert(dailyTrainStation);
+        });
+        LOG.info("生成 [{}] 车次 [{}] 车站信息结束", DateUtil.formatDate(date),trainCode);
+    }
 }

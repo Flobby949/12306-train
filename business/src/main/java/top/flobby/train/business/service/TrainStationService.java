@@ -114,4 +114,11 @@ public class TrainStationService {
         List<TrainStation> trainStationList = trainStationMapper.selectByExample(trainStationExample);
         return CollUtil.isNotEmpty(trainStationList);
     }
+
+    public List<TrainStation> selectStationByTrainCode(String trainCode) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        return trainStationMapper.selectByExample(trainStationExample);
+    }
 }

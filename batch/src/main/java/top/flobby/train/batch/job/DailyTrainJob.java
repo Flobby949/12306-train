@@ -36,7 +36,7 @@ public class DailyTrainJob implements Job {
         LOGGER.info("每日火车生成任务开始 - 生成五天后的记录");
         Date today = new Date();
         DateTime offsetDay = DateUtil.offsetDay(today, 5);
-        CommonResp<Object> commonResp = businessFeign.genDaily(offsetDay.toJdkDate());
+        CommonResp<Object> commonResp = businessFeign.genDailyTrain(offsetDay.toJdkDate());
         LOGGER.info(commonResp.getMessage());
         LOGGER.info("每日火车生成任务结束 - 生成五天后的记录");
     }

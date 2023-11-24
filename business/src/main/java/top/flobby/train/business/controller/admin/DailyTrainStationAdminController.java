@@ -1,15 +1,17 @@
 package top.flobby.train.business.controller.admin;
 
-import top.flobby.train.common.context.LoginMemberContext;
-import top.flobby.train.common.resp.CommonResp;
-import top.flobby.train.common.resp.PageResp;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 import top.flobby.train.business.req.DailyTrainStationQueryReq;
 import top.flobby.train.business.req.DailyTrainStationSaveReq;
 import top.flobby.train.business.resp.DailyTrainStationQueryResp;
 import top.flobby.train.business.service.DailyTrainStationService;
-import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
+import top.flobby.train.common.resp.CommonResp;
+import top.flobby.train.common.resp.PageResp;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/admin/daily-train-station")
@@ -33,6 +35,13 @@ public class DailyTrainStationAdminController {
     @DeleteMapping("/delete/{id}")
     public CommonResp<Object> delete(@PathVariable Long id) {
         dailyTrainStationService.delete(id);
+        return CommonResp.success();
+    }
+
+    @GetMapping("gen-daily")
+    public CommonResp<Object> genDaily(@RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date,
+                                       @RequestParam("trainCode") String trainCode) {
+        dailyTrainStationService.genDaily(date, trainCode);
         return CommonResp.success();
     }
 
