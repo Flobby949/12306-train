@@ -99,4 +99,10 @@ public class TrainService {
         List<Train> trainList = trainMapper.selectByExample(trainExample);
         return CollUtil.isNotEmpty(trainList);
     }
+
+    public List<Train> selectAll() {
+        TrainExample trainExample = new TrainExample();
+        trainExample.setOrderByClause("code asc");
+        return trainMapper.selectByExample(trainExample);
+    }
 }

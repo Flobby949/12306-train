@@ -50,25 +50,10 @@
 import { ref, onMounted } from 'vue'
 import { notification } from 'ant-design-vue'
 import axios from 'axios'
-import dayjs from 'dayjs'
 import trainSelect from '@/components/train-select'
 const SEAT_COL_ARRAY = window.SEAT_COL_ARRAY
 const SEAT_TYPE_ARRAY = window.SEAT_TYPE_ARRAY
 const SEAT_SALE_ARRAY = window.SEAT_SALE_ARRAY
-const visible = ref(false)
-const dailyTrainSeat = ref({
-  id: undefined,
-  date: undefined,
-  trainCode: undefined,
-  carriageIndex: undefined,
-  row: undefined,
-  col: undefined,
-  seatType: undefined,
-  carriageSeatIndex: undefined,
-  sell: undefined,
-  createTime: undefined,
-  updateTime: undefined
-})
 const dailyTrainSeats = ref([])
 // 分页的三个属性名是固定的
 const pagination = ref({
@@ -127,35 +112,11 @@ const params = ref({
   date: null,
   code: null
 })
-const onAdd = () => {
-  dailyTrainSeat.value = {}
-  visible.value = true
-}
-
-const onEdit = (record) => {
-  dailyTrainSeat.value = window.Tool.copy(record)
-  visible.value = true
-}
 
 const onDelete = (record) => {
   axios.delete('/business/admin/daily-train-seat/delete/' + record.id).then((data) => {
     if (data.success) {
       notification.success({ description: '删除成功！' })
-      handleQuery({
-        page: pagination.value.current,
-        size: pagination.value.pageSize
-      })
-    } else {
-      notification.error({ description: data.message })
-    }
-  })
-}
-
-const handleOk = () => {
-  axios.post('/business/admin/daily-train-seat/save', dailyTrainSeat.value).then((data) => {
-    if (data.success) {
-      notification.success({ description: '保存成功！' })
-      visible.value = false
       handleQuery({
         page: pagination.value.current,
         size: pagination.value.pageSize
@@ -201,11 +162,6 @@ const handleTableChange = (pagination) => {
     page: pagination.current,
     size: pagination.pageSize
   })
-}
-
-const disabledDate = (current) => {
-  // Can not select days before today
-  return current && current < dayjs().startOf('day')
 }
 
 onMounted(() => {

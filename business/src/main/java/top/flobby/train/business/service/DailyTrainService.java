@@ -1,23 +1,28 @@
 package top.flobby.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import top.flobby.train.common.resp.PageResp;
-import top.flobby.train.common.utils.SnowUtil;
-import top.flobby.train.business.domain.DailyTrain;
-import top.flobby.train.business.domain.DailyTrainExample;
-import top.flobby.train.business.mapper.DailyTrainMapper;
-import top.flobby.train.business.req.DailyTrainQueryReq;
-import top.flobby.train.business.req.DailyTrainSaveReq;
-import top.flobby.train.business.resp.DailyTrainQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import top.flobby.train.business.domain.DailyTrain;
+import top.flobby.train.business.domain.DailyTrainExample;
+import top.flobby.train.business.domain.Train;
+import top.flobby.train.business.mapper.DailyTrainMapper;
+import top.flobby.train.business.req.DailyTrainQueryReq;
+import top.flobby.train.business.req.DailyTrainSaveReq;
+import top.flobby.train.business.resp.DailyTrainQueryResp;
+import top.flobby.train.common.exception.BusinessException;
+import top.flobby.train.common.exception.BusinessExceptionEnum;
+import top.flobby.train.common.resp.PageResp;
+import top.flobby.train.common.utils.SnowUtil;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +36,8 @@ public class DailyTrainService {
 
     @Resource
     private DailyTrainMapper dailyTrainMapper;
+    @Resource
+    private TrainService trainService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -77,4 +84,32 @@ public class DailyTrainService {
         dailyTrainMapper.deleteByPrimaryKey(id);
     }
 
+
+    public void genDaily(Date date) {
+        List<Train> trainList = trainService.selectAll();
+        if (CollUtil.isEmpty(trainList)) {
+            LOG.error("没有车次信息");
+            throw new BusinessException(BusinessExceptionEnum.TRAIN_CODE_NOT_EXIST);
+        }
+        for (Train train : trainList) {
+            genTrainDaily(train, date);
+        }
+    }
+
+    public void genTrainDaily(Train train, Date date) {
+        // 删除当天的车次信息
+        DailyTrainExample dailyTrainExample = new DailyTrainExample();
+        dailyTrainExample.createCriteria()
+                .andCodeEqualTo(train.getCode())
+                .andDateEqualTo(date);
+        dailyTrainMapper.deleteByExample(dailyTrainExample);
+        // 生成当天的车次信息
+        DateTime now = DateTime.now();
+        DailyTrain dailyTrain = BeanUtil.copyProperties(train, DailyTrain.class);
+        dailyTrain.setId(SnowUtil.getSnowflakeNextId());
+        dailyTrain.setDate(date);
+        dailyTrain.setCreateTime(now);
+        dailyTrain.setUpdateTime(now);
+        dailyTrainMapper.insert(dailyTrain);
+    }
 }

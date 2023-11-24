@@ -1,15 +1,17 @@
 package top.flobby.train.business.controller.admin;
 
-import top.flobby.train.common.context.LoginMemberContext;
-import top.flobby.train.common.resp.CommonResp;
-import top.flobby.train.common.resp.PageResp;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 import top.flobby.train.business.req.DailyTrainQueryReq;
 import top.flobby.train.business.req.DailyTrainSaveReq;
 import top.flobby.train.business.resp.DailyTrainQueryResp;
 import top.flobby.train.business.service.DailyTrainService;
-import jakarta.annotation.Resource;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
+import top.flobby.train.common.resp.CommonResp;
+import top.flobby.train.common.resp.PageResp;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/admin/daily-train")
@@ -36,4 +38,9 @@ public class DailyTrainAdminController {
         return CommonResp.success();
     }
 
+    @GetMapping("/genDaily/{date}")
+    public CommonResp<Object> genDaily(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        dailyTrainService.genDaily(date);
+        return CommonResp.success();
+    }
 }
