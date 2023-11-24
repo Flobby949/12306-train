@@ -1,6 +1,8 @@
 <template>
   <p>
     <a-space>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <train-select v-model:value="params.code" placeholder="请选择车次" />
       <a-button type="primary" @click="handleQuery()">刷新</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
@@ -33,35 +35,40 @@
   <a-modal v-model:visible="visible" title="每日车次" @ok="handleOk" ok-text="确认" cancel-text="取消">
     <a-form :model="dailyTrain" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
       <a-form-item label="日期">
-        <a-date-picker v-model:value="dailyTrain.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+        <a-date-picker
+          v-model:value="dailyTrain.date"
+          :disabled-date="disabledDate"
+          valueFormat="YYYY-MM-DD"
+          placeholder="请选择日期"
+        />
       </a-form-item>
       <a-form-item label="车次编号">
-        <a-input v-model:value="dailyTrain.code" />
+        <train-select v-model:value="dailyTrain.code" @change="onChange" />
       </a-form-item>
       <a-form-item label="车次类型">
-        <a-select v-model:value="dailyTrain.type">
+        <a-select v-model:value="dailyTrain.type" disabled>
           <a-select-option v-for="item in TRAIN_TYPE_ARRAY" :key="item.code" :value="item.code">
             {{ item.desc }}
           </a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label="始发站">
-        <a-input v-model:value="dailyTrain.start" />
+        <station-select v-model:value="dailyTrain.start" disabled />
       </a-form-item>
       <a-form-item label="始发站拼音">
-        <a-input v-model:value="dailyTrain.startPinyin" />
+        <a-input v-model:value="dailyTrain.startPinyin" disabled />
       </a-form-item>
       <a-form-item label="出发时间">
-        <a-time-picker v-model:value="dailyTrain.startTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
+        <a-time-picker v-model:value="dailyTrain.startTime" valueFormat="HH:mm:ss" placeholder="请选择时间" disabled />
       </a-form-item>
       <a-form-item label="终点站">
-        <a-input v-model:value="dailyTrain.end" />
+        <station-select v-model:value="dailyTrain.end" disabled />
       </a-form-item>
       <a-form-item label="终点站拼音">
-        <a-input v-model:value="dailyTrain.endPinyin" />
+        <a-input v-model:value="dailyTrain.endPinyin" disabled />
       </a-form-item>
       <a-form-item label="到站时间">
-        <a-time-picker v-model:value="dailyTrain.endTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
+        <a-time-picker v-model:value="dailyTrain.endTime" valueFormat="HH:mm:ss" placeholder="请选择时间" disabled />
       </a-form-item>
     </a-form>
   </a-modal>
@@ -71,7 +78,9 @@
 import { ref, onMounted } from 'vue'
 import { notification } from 'ant-design-vue'
 import axios from 'axios'
-
+import dayjs from 'dayjs'
+import trainSelect from '@/components/train-select'
+import stationSelect from '@/components/station-select'
 const TRAIN_TYPE_ARRAY = window.TRAIN_TYPE_ARRAY
 const visible = ref(false)
 const dailyTrain = ref({
@@ -147,7 +156,10 @@ const columns = [
     dataIndex: 'operation'
   }
 ]
-
+const params = ref({
+  date: null,
+  code: null
+})
 const onAdd = () => {
   dailyTrain.value = {}
   visible.value = true
@@ -199,7 +211,9 @@ const handleQuery = (param) => {
     .get('/business/admin/daily-train/query-list', {
       params: {
         page: param.page,
-        size: param.size
+        size: param.size,
+        date: params.value.date,
+        code: params.value.code
       }
     })
     .then((data) => {
@@ -220,6 +234,18 @@ const handleTableChange = (pagination) => {
     page: pagination.current,
     size: pagination.pageSize
   })
+}
+
+const onChange = (train) => {
+  const t = Tool.copy(train)
+  const date = dailyTrain.value.date
+  dailyTrain.value = t
+  dailyTrain.value.date = date
+}
+
+const disabledDate = (current) => {
+  // Can not select days before today
+  return current && current < dayjs().startOf('day')
 }
 
 onMounted(() => {
