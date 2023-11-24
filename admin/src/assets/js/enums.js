@@ -27,3 +27,8 @@ SEAT_COL_ARRAY = [
   { code: 'D', desc: 'D' },
   { code: 'F', desc: 'F' }
 ]
+
+SEAT_SALE_ARRAY = [
+  { code: '1', desc: '售出' },
+  { code: '0', desc: '可售' }
+]
