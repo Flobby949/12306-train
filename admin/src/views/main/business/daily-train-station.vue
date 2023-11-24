@@ -1,7 +1,9 @@
 <template>
   <p>
     <a-space>
-      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <train-select v-model:value="params.code" placeholder="请选择车次" />
+      <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
@@ -26,19 +28,24 @@
   <a-modal v-model:visible="visible" title="每日车站" @ok="handleOk" ok-text="确认" cancel-text="取消">
     <a-form :model="dailyTrainStation" :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
       <a-form-item label="日期">
-        <a-date-picker v-model:value="dailyTrainStation.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+        <a-date-picker
+          v-model:value="dailyTrainStation.date"
+          valueFormat="YYYY-MM-DD"
+          placeholder="请选择日期"
+          :disabled-date="disabledDate"
+        />
       </a-form-item>
       <a-form-item label="车次编号">
-        <a-input v-model:value="dailyTrainStation.trainCode" />
+        <train-select v-model:value="dailyTrainStation.trainCode" placeholder="请选择车次" />
       </a-form-item>
       <a-form-item label="站序">
-        <a-input v-model:value="dailyTrainStation.index" />
+        <a-input-number v-model:value="dailyTrainStation.index" :min="1" :max="100" />
       </a-form-item>
       <a-form-item label="站名">
-        <a-input v-model:value="dailyTrainStation.name" />
+        <station-select v-model:value="dailyTrainStation.name" placeholder="请选择车站" />
       </a-form-item>
       <a-form-item label="站名拼音">
-        <a-input v-model:value="dailyTrainStation.namePinyin" />
+        <a-input v-model:value="dailyTrainStation.namePinyin" disabled />
       </a-form-item>
       <a-form-item label="进站时间">
         <a-time-picker v-model:value="dailyTrainStation.inTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
@@ -50,16 +57,20 @@
         <a-time-picker v-model:value="dailyTrainStation.stopTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
       </a-form-item>
       <a-form-item label="里程（公里）">
-        <a-input v-model:value="dailyTrainStation.km" />
+        <a-input-number v-model:value="dailyTrainStation.km" :min="1" :max="500" />
       </a-form-item>
     </a-form>
   </a-modal>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { notification } from 'ant-design-vue'
 import axios from 'axios'
+import trainSelect from '@/components/train-select'
+import stationSelect from '@/components/station-select'
+import { pinyin } from 'pinyin-pro'
+import dayjs from 'dayjs'
 
 const visible = ref(false)
 const dailyTrainStation = ref({
@@ -135,7 +146,10 @@ const columns = [
     dataIndex: 'operation'
   }
 ]
-
+const params = ref({
+  date: null,
+  code: null
+})
 const onAdd = () => {
   dailyTrainStation.value = {}
   visible.value = true
@@ -187,7 +201,9 @@ const handleQuery = (param) => {
     .get('/business/admin/daily-train-station/query-list', {
       params: {
         page: param.page,
-        size: param.size
+        size: param.size,
+        date: params.value.date,
+        code: params.value.code
       }
     })
     .then((data) => {
@@ -209,6 +225,52 @@ const handleTableChange = (pagination) => {
     size: pagination.pageSize
   })
 }
+
+const disabledDate = (current) => {
+  // Can not select days before today
+  return current && current < dayjs().startOf('day')
+}
+
+watch(
+  () => dailyTrainStation.value.name,
+  () => {
+    if (Tool.isNotEmpty(dailyTrainStation.value.name)) {
+      dailyTrainStation.value.namePinyin = pinyin(dailyTrainStation.value.name, { toneType: 'none' }).replaceAll(
+        ' ',
+        ''
+      )
+    } else {
+      dailyTrainStation.value.namePinyin = ''
+    }
+  },
+  { immediate: true }
+)
+
+// 自动计算停车时长
+watch(
+  () => dailyTrainStation.value.inTime,
+  () => {
+    const diff = dayjs(dailyTrainStation.value.outTime, 'HH:mm:ss').diff(
+      dayjs(dailyTrainStation.value.inTime, 'HH:mm:ss'),
+      'seconds'
+    )
+    dailyTrainStation.value.stopTime = dayjs('00:00:00', 'HH:mm:ss').second(diff).format('HH:mm:ss')
+  },
+  { immediate: true }
+)
+
+// 自动计算停车时长
+watch(
+  () => dailyTrainStation.value.outTime,
+  () => {
+    const diff = dayjs(dailyTrainStation.value.outTime, 'HH:mm:ss').diff(
+      dayjs(dailyTrainStation.value.inTime, 'HH:mm:ss'),
+      'seconds'
+    )
+    dailyTrainStation.value.stopTime = dayjs('00:00:00', 'HH:mm:ss').second(diff).format('HH:mm:ss')
+  },
+  { immediate: true }
+)
 
 onMounted(() => {
   handleQuery({
