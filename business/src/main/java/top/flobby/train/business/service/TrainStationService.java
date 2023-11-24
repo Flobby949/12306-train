@@ -117,8 +117,8 @@ public class TrainStationService {
 
     public List<TrainStation> selectStationByTrainCode(String trainCode) {
         TrainStationExample trainStationExample = new TrainStationExample();
-        TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
-        criteria.andTrainCodeEqualTo(trainCode);
+        trainStationExample.setOrderByClause("`index` asc");
+        trainStationExample.createCriteria().andTrainCodeEqualTo(trainCode);
         return trainStationMapper.selectByExample(trainStationExample);
     }
 }

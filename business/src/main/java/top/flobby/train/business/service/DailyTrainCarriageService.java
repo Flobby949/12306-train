@@ -110,6 +110,11 @@ public class DailyTrainCarriageService {
     }
 
     public void genDailyCarriage(String trainCode, Date date) {
+        // 删除原有数据
+        DailyTrainCarriageExample dailyTrainCarriageExample = new DailyTrainCarriageExample();
+        dailyTrainCarriageExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+        dailyTrainCarriageMapper.deleteByExample(dailyTrainCarriageExample);
+        // 生成新数据
         List<TrainCarriage> carriageList = trainCarriageService.selectByTrainCode(trainCode);
         if (CollUtil.isEmpty(carriageList)) {
             LOG.error("没有车厢信息");
