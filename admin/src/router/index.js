@@ -67,6 +67,15 @@ const routes = [
             component: () => import('../views/main/batch/job.vue')
           }
         ]
+      },
+      {
+        path: 'programmer/',
+        children: [
+          {
+            path: 'programmer',
+            component: () => import('../views/main/programmer/programmer.vue')
+          }
+        ]
       }
     ]
   },
