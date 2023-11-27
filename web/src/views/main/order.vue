@@ -120,7 +120,7 @@
 import { ref, onMounted, watch, computed } from 'vue'
 import axios from 'axios'
 import { notification } from 'ant-design-vue'
-
+import router from '@/router'
 const passengers = ref([])
 const passengerOptions = ref([])
 const passengerChecks = ref([])
@@ -321,12 +321,13 @@ const handleOk = () => {
       if (data.success) {
         notification.success({ description: '提交订单成功' })
         // 跳转到订单列表
-        // router.push('/main/order-list')
+        router.push('/my-ticket')
       } else {
         notification.error({ description: data.message })
       }
     })
-
+  chooseSeatObj.value = {}
+  passengerChecks.value = []
   visible.value = false
 }
 
