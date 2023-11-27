@@ -16,7 +16,7 @@ import top.flobby.train.common.resp.CommonResp;
 @FeignClient(name = "train-member", path = "/member")
 public interface MemberFeign {
 
-    @GetMapping("/member/feign/ticket/save")
+    @GetMapping("/feign/ticket/save")
     CommonResp<Object> save(@RequestBody MemberTicketReq req);
 
 }
