@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import top.flobby.train.business.domain.DailyTrainSeat;
 import top.flobby.train.business.domain.DailyTrainSeatExample;
 import top.flobby.train.business.domain.TrainSeat;
+import top.flobby.train.business.domain.TrainStation;
 import top.flobby.train.business.mapper.DailyTrainSeatMapper;
 import top.flobby.train.business.req.DailyTrainSeatQueryReq;
 import top.flobby.train.business.req.DailyTrainSeatSaveReq;
@@ -90,6 +92,8 @@ public class DailyTrainSeatService {
         DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
         dailyTrainSeatExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
         dailyTrainSeatMapper.deleteByExample(dailyTrainSeatExample);
+        List<TrainStation> stationList = trainStationService.selectStationByTrainCode(trainCode);
+        String sell = StrUtil.fillBefore("", '0', stationList.size());
         // 生成新数据
         List<TrainSeat> seatList = trainSeatService.selectAllByTrainCode(trainCode);
         if (CollUtil.isEmpty(seatList)) {
@@ -103,7 +107,7 @@ public class DailyTrainSeatService {
             dailyTrainSeat.setCreateTime(now);
             dailyTrainSeat.setUpdateTime(now);
             dailyTrainSeat.setDate(date);
-            dailyTrainSeat.setSell("0");
+            dailyTrainSeat.setSell(sell);
             dailyTrainSeatMapper.insert(dailyTrainSeat);
         }
         LOG.info("生成 [{}] 车次 [{}] 的车座信息结束", DateUtil.formatDate(date),trainCode);
@@ -120,5 +124,15 @@ public class DailyTrainSeatService {
             return -1;
         }
         return (int) l;
+    }
+
+    public List<DailyTrainSeat> selectByCarriage(Date date, String trainCode, Integer carriageIndex) {
+        DailyTrainSeatExample example = new DailyTrainSeatExample();
+        example.setOrderByClause("carriage_seat_index asc");
+        example.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode)
+                .andCarriageIndexEqualTo(carriageIndex);
+        return dailyTrainSeatMapper.selectByExample(example);
     }
 }

@@ -43,12 +43,12 @@ public class TrainCarriageService {
         int colCount = SeatColEnum.getColsByType(req.getSeatType()).size();
         trainCarriage.setColCount(colCount);
         trainCarriage.setSeatCount(colCount * req.getRowCount());
-        // 厢号唯一性校验
-        if (selectIndexByUnique(trainCarriage.getTrainCode(), trainCarriage.getIndex())) {
-            throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
-        }
         if (ObjectUtil.isNull(trainCarriage.getId())) {
             trainCarriage.setId(SnowUtil.getSnowflakeNextId());
+            // 厢号唯一性校验
+            if (selectIndexByUnique(trainCarriage.getTrainCode(), trainCarriage.getIndex())) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
+            }
             trainCarriage.setCreateTime(now);
             trainCarriage.setUpdateTime(now);
             trainCarriageMapper.insert(trainCarriage);

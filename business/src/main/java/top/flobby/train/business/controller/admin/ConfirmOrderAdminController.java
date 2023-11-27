@@ -1,10 +1,9 @@
 package top.flobby.train.business.controller.admin;
 
-import top.flobby.train.common.context.LoginMemberContext;
 import top.flobby.train.common.resp.CommonResp;
 import top.flobby.train.common.resp.PageResp;
 import top.flobby.train.business.req.ConfirmOrderQueryReq;
-import top.flobby.train.business.req.ConfirmOrderSaveReq;
+import top.flobby.train.business.req.ConfirmOrderDoReq;
 import top.flobby.train.business.resp.ConfirmOrderQueryResp;
 import top.flobby.train.business.service.ConfirmOrderService;
 import jakarta.annotation.Resource;
@@ -19,7 +18,7 @@ public class ConfirmOrderAdminController {
     private ConfirmOrderService confirmOrderService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody ConfirmOrderSaveReq req) {
+    public CommonResp<Object> save(@Valid @RequestBody ConfirmOrderDoReq req) {
         confirmOrderService.save(req);
         return CommonResp.success();
     }

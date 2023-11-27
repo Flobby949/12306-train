@@ -23,7 +23,8 @@ public enum BusinessExceptionEnum {
     TRAIN_STATION_EXIST("车站已存在"),
     BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR("同车次站序已存在"),
     BUSINESS_TRAIN_STATION_NAME_UNIQUE_ERROR("同车次站名已存在"),
-    BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR("同车次厢号已存在");
+    BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR("同车次厢号已存在"),
+    CONFIRM_ORDER_TICKET_COUNT_ERROR("余票不足");
 
     private final String desc;
 

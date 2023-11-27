@@ -284,7 +284,51 @@ const finishCheckPassenger = () => {
   visible.value = true
 }
 
-const handleOk = () => {}
+const handleOk = () => {
+  console.log('选好的座位', chooseSeatObj.value)
+  // 设置每张票的座位
+  // 清空购票列表中的座位，有可能之前选了，但是被拦截
+  for (let i = 0; i < tickets.value.length; i++) {
+    tickets.value[i].seat = null
+  }
+  let i = -1
+  // 要么不选座位，要么选择座位的数量必须等于购票数量
+  for (const key in chooseSeatObj.value) {
+    if (chooseSeatObj.value[key]) {
+      i++
+      if (i > tickets.value.length - 1) {
+        notification.error({ description: '选座数量不能超过购票数量' })
+        return
+      }
+      tickets.value[i].seat = key
+    }
+  }
+  if (i > -1 && i < tickets.value.length - 1) {
+    notification.error({ description: '选座数量不能少于购票数量' })
+    return
+  }
+
+  axios
+    .post('business/confirm-order/do', {
+      dailyTrainTicketId: dailyTrainTicket.id,
+      tickets: tickets.value,
+      date: dailyTrainTicket.date,
+      trainCode: dailyTrainTicket.trainCode,
+      start: dailyTrainTicket.start,
+      end: dailyTrainTicket.end
+    })
+    .then((data) => {
+      if (data.success) {
+        notification.success({ description: '提交订单成功' })
+        // 跳转到订单列表
+        // router.push('/main/order-list')
+      } else {
+        notification.error({ description: data.message })
+      }
+    })
+
+  visible.value = false
+}
 
 onMounted(() => {
   handleQueryPassenger()

@@ -48,11 +48,11 @@ public class DailyTrainCarriageService {
         int colCount = SeatColEnum.getColsByType(req.getSeatType()).size();
         dailyTrainCarriage.setColCount(colCount);
         dailyTrainCarriage.setSeatCount(colCount * req.getRowCount());
-        // 厢号唯一性校验
-        if (selectIndexByUnique(dailyTrainCarriage.getTrainCode(), dailyTrainCarriage.getIndex())) {
-            throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
-        }
         if (ObjectUtil.isNull(dailyTrainCarriage.getId())) {
+            // 厢号唯一性校验
+            if (selectIndexByUnique(dailyTrainCarriage.getTrainCode(), dailyTrainCarriage.getIndex())) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
+            }
             dailyTrainCarriage.setId(SnowUtil.getSnowflakeNextId());
             dailyTrainCarriage.setCreateTime(now);
             dailyTrainCarriage.setUpdateTime(now);
@@ -130,5 +130,14 @@ public class DailyTrainCarriageService {
             dailyTrainCarriageMapper.insert(dailyTrainCarriage);
         }
         LOG.info("生成 [{}] 车次 [{}] 的车厢信息结束", DateUtil.formatDate(date),trainCode);
+    }
+
+    public List<DailyTrainCarriage> selectBySeatType (Date date, String trainCode, String seatType) {
+        DailyTrainCarriageExample example = new DailyTrainCarriageExample();
+        example.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode)
+                .andSeatTypeEqualTo(seatType);
+        return dailyTrainCarriageMapper.selectByExample(example);
     }
 }
