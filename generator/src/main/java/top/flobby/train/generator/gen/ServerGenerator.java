@@ -25,7 +25,7 @@ public class ServerGenerator {
     static String serverPath = "[module]/src/main/java/top/flobby/train/[module]/";
     static String pomPath = "generator/pom.xml";
     static String vueWebPath = "web/src/views/main/";
-    static String vueAdminPath = "admin/src/views/main/programmer/";
+    static String vueAdminPath = "admin/src/views/main/business/";
     static boolean readOnly = false;
 
     public static void main(String[] args) throws Exception {
