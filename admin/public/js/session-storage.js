@@ -1,7 +1,8 @@
-// eslint-disable-next-line no-undef
+SESSION_ALL_TRAIN = 'SESSION_ALL_TRAIN'
+
 SessionStorage = {
   get: function (key) {
-    const v = sessionStorage.getItem(key)
+    const v = JSON.parse(sessionStorage.getItem(key))
     if (v && typeof v !== 'undefined' && v !== 'undefined') {
       return v
     }

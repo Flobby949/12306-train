@@ -1,12 +1,17 @@
 package top.flobby.train.business.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-        import java.util.Date;
-        import com.fasterxml.jackson.annotation.JsonFormat;
-        import java.math.BigDecimal;
 
-public class DailyTrainTicketQueryResp {
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @author Flobby
+ */
+public class DailyTrainTicketQueryResp implements Serializable {
 
     /**
     * id

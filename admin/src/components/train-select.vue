@@ -57,13 +57,21 @@ watch(
  * 查询所有的车次，用于车次下拉框
  */
 const queryAllTrain = () => {
-  axios.get('/business/admin/train/query-all').then((data) => {
-    if (data.success) {
-      trains.value = data.data
-    } else {
-      notification.error({ description: data.message })
-    }
-  })
+  const list = SessionStorage.get(SESSION_ALL_TRAIN)
+  if (Tool.isNotEmpty(list)) {
+    console.log('queryAllTrain 读取缓存')
+    trains.value = list
+  } else {
+    axios.get('/business/admin/train/query-all').then((data) => {
+      if (data.success) {
+        trains.value = data.data
+        console.log('queryAllTrain 保存缓存')
+        SessionStorage.set(SESSION_ALL_TRAIN, JSON.stringify(trains.value))
+      } else {
+        notification.error({ description: data.message })
+      }
+    })
+  }
 }
 
 /**
