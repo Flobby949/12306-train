@@ -84,6 +84,15 @@ const routes = [
             component: () => import('../views/main/programmer/programmer.vue')
           }
         ]
+      },
+      {
+        path: 'member/',
+        children: [
+          {
+            path: 'ticket',
+            component: () => import('../views/main/member/ticket.vue')
+          }
+        ]
       }
     ]
   },

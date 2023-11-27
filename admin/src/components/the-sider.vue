@@ -1,11 +1,6 @@
 <template>
   <a-layout-sider width="200" style="background: #fff">
-    <a-menu
-      v-model:selectedKeys="selectedKeys"
-      :openKeys="['batch', 'base', 'business', 'programmer']"
-      mode="inline"
-      :style="{ height: '100%', borderRight: 0 }"
-    >
+    <a-menu v-model:selectedKeys="selectedKeys" mode="inline" :style="{ height: '100%', borderRight: 0 }">
       <a-menu-item key="/welcome">
         <router-link to="/welcome"> <coffee-outlined /> 欢迎 </router-link>
       </a-menu-item>
@@ -21,6 +16,20 @@
         </template>
         <a-menu-item key="/batch/job">
           <router-link to="/batch/job"> <MenuUnfoldOutlined /> 任务管理 </router-link>
+        </a-menu-item>
+      </a-sub-menu>
+      <a-sub-menu key="member">
+        <template #title>
+          <span>
+            <UnorderedListOutlined />
+            会员管理
+          </span>
+        </template>
+        <a-menu-item key="/member/ticket">
+          <router-link to="/member/ticket">
+            <MenuUnfoldOutlined />
+            会员车票
+          </router-link>
         </a-menu-item>
       </a-sub-menu>
       <a-sub-menu key="business">
