@@ -15,7 +15,7 @@ import java.util.Date;
  * @create : 2023-11-24 10:19
  **/
 
-@FeignClient(name = "business", url = "http://localhost:8002/business")
+@FeignClient(name = "train-business", path = "/business")
 public interface BusinessFeign {
 
     @GetMapping("/test")

@@ -13,7 +13,7 @@ import top.flobby.train.common.resp.CommonResp;
  * @create : 2023-11-27 16:28
  **/
 
-@FeignClient(name = "member", url = "http://127.0.0.1:8001")
+@FeignClient(name = "train-member", path = "/member")
 public interface MemberFeign {
 
     @GetMapping("/member/feign/ticket/save")

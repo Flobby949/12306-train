@@ -33,11 +33,11 @@ public class DailyTrainJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         MDC.put("LOG_ID",System.currentTimeMillis()+ RandomUtil.randomString(3));
-        LOGGER.info("每日火车生成任务开始 - 生成五天后的记录");
+        LOGGER.info("每日火车生成任务开始 - 生成 1 天后的记录");
         Date today = new Date();
-        DateTime offsetDay = DateUtil.offsetDay(today, 5);
+        DateTime offsetDay = DateUtil.offsetDay(today, 1);
         CommonResp<Object> commonResp = businessFeign.genDailyTrain(offsetDay.toJdkDate());
         LOGGER.info(commonResp.getMessage());
-        LOGGER.info("每日火车生成任务结束 - 生成五天后的记录");
+        LOGGER.info("每日火车生成任务结束 - 生成 1 天后的记录");
     }
 }

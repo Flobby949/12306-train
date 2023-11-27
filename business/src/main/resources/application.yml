@@ -4,12 +4,17 @@ server:
     context-path: /business
 
 spring:
+  application:
+    name: train-business
   datasource:
     url: jdbc:mysql://rm-cn-4xl3e1zjr00016fo.rwlb.rds.aliyuncs.com:3306/train_business?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
     username: train
     password: Train123
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 106.15.104.19:8848
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 

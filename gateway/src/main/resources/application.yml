@@ -8,15 +8,15 @@ spring:
     gateway:
       routes:
         - id: train-member
-          uri: http://127.0.0.1:8001
+          uri: lb://train-member
           predicates:
             - Path=/member/**
         - id: train-business
-          uri: http://127.0.0.1:8002
+          uri: lb://train-business
           predicates:
             - Path=/business/**
         - id: train-batch
-          uri: http://127.0.0.1:8003
+          uri: lb://train-batch
           predicates:
             - Path=/batch/**
       globalcors:
@@ -27,3 +27,6 @@ spring:
                 allowCredentials: true
                 allowedOriginPatterns: "*"
                 maxAge: 3600
+    nacos:
+      discovery:
+          server-addr: 106.15.104.19:8848
