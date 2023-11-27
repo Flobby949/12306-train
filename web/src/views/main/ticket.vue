@@ -6,7 +6,6 @@
       <station-select v-model:value="params.start" />
       <station-select v-model:value="params.end" />
       <a-button type="primary" @click="handleQuery()">查询</a-button>
-      <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
   <a-table
@@ -17,7 +16,9 @@
     :loading="loading"
   >
     <template #bodyCell="{ column, record }">
-      <template v-if="column.dataIndex === 'operation'"> </template>
+      <template v-if="column.dataIndex === 'operation'">
+        <a-button type="primary" @click="toOrder(record)">预定</a-button>
+      </template>
       <template v-else-if="column.dataIndex === 'station'">
         {{ record.start }}<br />
         {{ record.end }}
@@ -70,6 +71,7 @@ import axios from 'axios'
 import trainSelect from '@/components/train-select'
 import stationSelect from '@/components/station-select'
 import dayjs from 'dayjs'
+import router from '@/router'
 
 const dailyTrainTickets = ref([])
 // 分页的三个属性名是固定的
@@ -121,6 +123,11 @@ const columns = [
     title: '硬卧',
     dataIndex: 'yw',
     key: 'yw'
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    key: 'operation'
   }
 ]
 const params = ref({
@@ -172,6 +179,16 @@ const handleTableChange = (pagination) => {
 const calDuration = (startTime, endTime) => {
   const diff = dayjs(endTime, 'HH:mm:ss').diff(dayjs(startTime, 'HH:mm:ss'), 'seconds')
   return dayjs('00:00:00', 'HH:mm:ss').second(diff).format('HH:mm:ss')
+}
+
+const dailyTrainTicket = ref({})
+
+const toOrder = (record) => {
+  dailyTrainTicket.value = Tool.copy(record)
+  // 将对象转换为字符串
+  SessionStorage.set(SESSION_ORDER, JSON.stringify(dailyTrainTicket.value))
+  // 跳转到订单页面
+  router.push('/order')
 }
 
 onMounted(() => {
