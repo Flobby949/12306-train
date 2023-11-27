@@ -1,23 +1,32 @@
 package top.flobby.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import top.flobby.train.common.resp.PageResp;
-import top.flobby.train.common.utils.SnowUtil;
-import top.flobby.train.business.domain.DailyTrainTicket;
-import top.flobby.train.business.domain.DailyTrainTicketExample;
-import top.flobby.train.business.mapper.DailyTrainTicketMapper;
-import top.flobby.train.business.req.DailyTrainTicketQueryReq;
-import top.flobby.train.business.req.DailyTrainTicketSaveReq;
-import top.flobby.train.business.resp.DailyTrainTicketQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import top.flobby.train.business.domain.DailyTrain;
+import top.flobby.train.business.domain.DailyTrainTicket;
+import top.flobby.train.business.domain.DailyTrainTicketExample;
+import top.flobby.train.business.domain.TrainStation;
+import top.flobby.train.business.enums.SeatTypeEnum;
+import top.flobby.train.business.enums.TrainTypeEnum;
+import top.flobby.train.business.mapper.DailyTrainTicketMapper;
+import top.flobby.train.business.req.DailyTrainTicketQueryReq;
+import top.flobby.train.business.req.DailyTrainTicketSaveReq;
+import top.flobby.train.business.resp.DailyTrainTicketQueryResp;
+import top.flobby.train.common.resp.PageResp;
+import top.flobby.train.common.utils.SnowUtil;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +40,10 @@ public class DailyTrainTicketService {
 
     @Resource
     private DailyTrainTicketMapper dailyTrainTicketMapper;
+    @Resource
+    private TrainStationService trainStationService;
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
 
     public void save(DailyTrainTicketSaveReq req) {
         DateTime now = DateTime.now();
@@ -72,4 +85,77 @@ public class DailyTrainTicketService {
         dailyTrainTicketMapper.deleteByPrimaryKey(id);
     }
 
+
+    public void genDailyTicket(Date date, String trainCode, DailyTrain dailyTrain) {
+        // 删除原有数据
+        DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
+        dailyTrainTicketExample.createCriteria().andTrainCodeEqualTo(trainCode).andDateEqualTo(date);
+        dailyTrainTicketMapper.deleteByExample(dailyTrainTicketExample);
+
+        // 查询车站信息
+        List<TrainStation> stationList = trainStationService.selectStationByTrainCode(trainCode);
+        if (CollUtil.isEmpty(stationList)) {
+            LOG.info("车次{}没有车站信息，生成结束", trainCode);
+            return;
+        }
+
+        DateTime now = DateTime.now();
+        for (int i = 0; i < stationList.size(); i++) {
+            TrainStation startStation = stationList.get(i);
+            BigDecimal sumKM = BigDecimal.ZERO;
+
+            for (int j = i + 1; j < stationList.size(); j++) {
+                TrainStation endStation = stationList.get(j);
+
+                sumKM = sumKM.add(endStation.getKm());
+
+                DailyTrainTicket dailyTrainTicket = new DailyTrainTicket();
+                dailyTrainTicket.setId(SnowUtil.getSnowflakeNextId());
+                dailyTrainTicket.setDate(date);
+                dailyTrainTicket.setTrainCode(trainCode);
+                dailyTrainTicket.setStart(startStation.getName());
+                dailyTrainTicket.setStartPinyin(startStation.getNamePinyin());
+                dailyTrainTicket.setStartTime(startStation.getOutTime());
+                dailyTrainTicket.setStartIndex(startStation.getIndex());
+                dailyTrainTicket.setEnd(endStation.getName());
+                dailyTrainTicket.setEndPinyin(endStation.getNamePinyin());
+                dailyTrainTicket.setEndTime(endStation.getInTime());
+                dailyTrainTicket.setEndIndex(endStation.getIndex());
+
+                int ydz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YDZ.getCode());
+                int edz = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.EDZ.getCode());
+                int rw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.RW.getCode());
+                int yw = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.YW.getCode());
+
+                // 票价 = 距离 * 座位类型基础票价 * 座位系数
+                String trainType = dailyTrain.getType();
+                BigDecimal priceRate = EnumUtil.getFieldBy(TrainTypeEnum::getPriceRate, TrainTypeEnum::getCode, trainType);
+                BigDecimal ydzPrice = sumKM.multiply(SeatTypeEnum.YDZ.getPrice())
+                        .multiply(priceRate)
+                        .setScale(2, RoundingMode.HALF_UP);
+                BigDecimal edzPrice = sumKM.multiply(SeatTypeEnum.EDZ.getPrice())
+                        .multiply(priceRate)
+                        .setScale(2, RoundingMode.HALF_UP);
+                BigDecimal rwPrice = sumKM.multiply(SeatTypeEnum.RW.getPrice())
+                        .multiply(priceRate)
+                        .setScale(2, RoundingMode.HALF_UP);
+                BigDecimal ywPrice = sumKM.multiply(SeatTypeEnum.YW.getPrice())
+                        .multiply(priceRate)
+                        .setScale(2, RoundingMode.HALF_UP);
+
+
+                dailyTrainTicket.setYdz(ydz);
+                dailyTrainTicket.setYdzPrice(ydzPrice);
+                dailyTrainTicket.setEdz(edz);
+                dailyTrainTicket.setEdzPrice(edzPrice);
+                dailyTrainTicket.setRw(rw);
+                dailyTrainTicket.setRwPrice(rwPrice);
+                dailyTrainTicket.setYw(yw);
+                dailyTrainTicket.setYwPrice(ywPrice);
+                dailyTrainTicket.setCreateTime(now);
+                dailyTrainTicket.setUpdateTime(now);
+                dailyTrainTicketMapper.insert(dailyTrainTicket);
+            }
+        }
+    }
 }
