@@ -13,6 +13,10 @@
         <UserOutlined />
         <router-link to="/passenger">乘车人管理</router-link>
       </a-menu-item>
+      <a-menu-item key="/ticket">
+        <UserOutlined />
+        <router-link to="/ticket">余票查询</router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-header>
 </template>
