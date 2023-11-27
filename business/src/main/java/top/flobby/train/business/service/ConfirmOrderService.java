@@ -38,6 +38,7 @@ import java.util.List;
  * @author Flobby
  */
 
+
 @Service
 public class ConfirmOrderService {
 
@@ -189,7 +190,7 @@ public class ConfirmOrderService {
 
         LOG.info("最终选座：{}", finalSeatList);
 
-        afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeatList);
+        afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeatList, tickets);
 
         // 选座
 

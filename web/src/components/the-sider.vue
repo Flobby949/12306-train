@@ -14,6 +14,12 @@
         <UserOutlined />
         <router-link to="/passenger">乘车人管理</router-link>
       </a-menu-item>
+      <a-menu-item key="/my-ticket">
+        <router-link to="/my-ticket">
+          <idcard-outlined />
+          我的车票
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>

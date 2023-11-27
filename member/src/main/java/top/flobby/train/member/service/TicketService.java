@@ -2,21 +2,20 @@ package top.flobby.train.member.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
-import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import top.flobby.train.common.req.MemberTicketReq;
 import top.flobby.train.common.resp.PageResp;
 import top.flobby.train.common.utils.SnowUtil;
 import top.flobby.train.member.domain.Ticket;
 import top.flobby.train.member.domain.TicketExample;
 import top.flobby.train.member.mapper.TicketMapper;
 import top.flobby.train.member.req.TicketQueryReq;
-import top.flobby.train.member.req.TicketSaveReq;
 import top.flobby.train.member.resp.TicketQueryResp;
-import jakarta.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -32,25 +31,22 @@ public class TicketService {
     @Resource
     private TicketMapper ticketMapper;
 
-    public void save(TicketSaveReq req) {
+    public void save(MemberTicketReq req) {
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
-        if (ObjectUtil.isNull(ticket.getId())) {
-            ticket.setId(SnowUtil.getSnowflakeNextId());
-            ticket.setCreateTime(now);
-            ticket.setUpdateTime(now);
-            ticketMapper.insert(ticket);
-        } else {
-            ticket.setUpdateTime(now);
-            ticketMapper.updateByPrimaryKey(ticket);
-        }
+        ticket.setId(SnowUtil.getSnowflakeNextId());
+        ticket.setCreateTime(now);
+        ticket.setUpdateTime(now);
+        ticketMapper.insert(ticket);
     }
 
     public PageResp<TicketQueryResp> queryList(TicketQueryReq req) {
         TicketExample ticketExample = new TicketExample();
         ticketExample.setOrderByClause("id desc");
         TicketExample.Criteria criteria = ticketExample.createCriteria();
-
+        if (req.getMemberId() != null) {
+            criteria.andMemberIdEqualTo(req.getMemberId());
+        }
         LOG.info("查询页码：{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
         PageHelper.startPage(req.getPage(), req.getSize());
