@@ -11,7 +11,6 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import top.flobby.train.business.domain.DailyTrain;
 import top.flobby.train.business.domain.DailyTrainTicket;
@@ -72,7 +71,7 @@ public class DailyTrainTicketService {
         return null;
     }
 
-    @Cacheable(value = "DailyTrainTicketService.queryList")
+    // @Cacheable(value = "DailyTrainTicketService.queryList")
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
         DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
         dailyTrainTicketExample.setOrderByClause("id desc");

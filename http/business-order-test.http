@@ -1,0 +1,22 @@
+POST http://localhost:8000/business/confirm-order/do
+Content-Type: application/json
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MDExNTAyMDEsIm1vYmlsZSI6IjE4OTYyNTIxNzUzIiwiaWQiOjE3MDA0Njc2MDYwNjUsImV4cCI6MTcwMTIzNjYwMSwiaWF0IjoxNzAxMTUwMjAxfQ.WfLXFQgSnHGI1U-gCZEg07iKV9v6EqYQTHY1TwZHt5k
+
+{
+  "dailyTrainTicketId": 1729381501742747648,
+  "date": 1701187200000,
+  "end": "天津站",
+  "start": "徐州站",
+  "tickets": [
+    {
+      "passengerId": 1726853328748548096,
+      "passengerIdCard": "320506200108282222",
+      "passengerName": "flobby",
+      "passengerType": "1",
+      "seatTypeCode": "1"
+    }
+  ],
+  "trainCode": "G1"
+}
+
+###
