@@ -20,6 +20,12 @@
           我的车票
         </router-link>
       </a-menu-item>
+      <a-menu-item key="/seat-sell">
+        <router-link to="/seat-sell">
+          <idcard-outlined />
+          座位销售图
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </a-layout-sider>
 </template>

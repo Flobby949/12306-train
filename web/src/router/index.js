@@ -33,6 +33,10 @@ const routes = [
       {
         path: 'my-ticket',
         component: () => import('../views/main/my-ticket.vue')
+      },
+      {
+        path: 'seat-sell',
+        component: () => import('../views/main/seat-sell.vue')
       }
     ]
   },

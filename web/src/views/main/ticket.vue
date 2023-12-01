@@ -2,7 +2,12 @@
   <p>
     <a-space>
       <train-select v-model:value="params.trainCode" />
-      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期" />
+      <a-date-picker
+        v-model:value="params.date"
+        valueFormat="YYYY-MM-DD"
+        placeholder="请选择日期"
+        :disabled-date="disabledDate"
+      />
       <station-select v-model:value="params.start" />
       <station-select v-model:value="params.end" />
       <a-button type="primary" @click="handleQuery()">查询</a-button>
@@ -18,6 +23,22 @@
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
         <a-button type="primary" @click="toOrder(record)" style="margin-right: 5px">预定</a-button>
+        <router-link
+          :to="{
+            path: '/seat-sell',
+            query: {
+              date: record.date,
+              trainCode: record.trainCode,
+              start: record.start,
+              startIndex: record.startIndex,
+              end: record.end,
+              endIndex: record.endIndex
+            }
+          }"
+          style="margin-right: 5px"
+        >
+          <a-button type="primary">座位销售图</a-button>
+        </router-link>
         <a-button type="primary" @click="showStation(record)">途径车站</a-button>
       </template>
       <template v-else-if="column.dataIndex === 'station'">
@@ -234,6 +255,11 @@ const showStation = (record) => {
         notification.error({ description: data.message })
       }
     })
+}
+
+// 不能选择今天以前及两周以后的日期
+const disabledDate = (current) => {
+  return current && (current <= dayjs().add(-1, 'day') || current > dayjs().add(14, 'day'))
 }
 
 onMounted(() => {
