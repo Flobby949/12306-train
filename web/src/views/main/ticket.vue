@@ -22,7 +22,9 @@
   >
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
-        <a-button type="primary" @click="toOrder(record)" style="margin-right: 5px">预定</a-button>
+        <a-button type="primary" @click="toOrder(record)" :disabled="isExpire(record)" style="margin-right: 5px">
+          {{ isExpire(record) ? '过期' : '预定' }}
+        </a-button>
         <router-link
           :to="{
             path: '/seat-sell',
@@ -260,6 +262,20 @@ const showStation = (record) => {
 // 不能选择今天以前及两周以后的日期
 const disabledDate = (current) => {
   return current && (current <= dayjs().add(-1, 'day') || current > dayjs().add(14, 'day'))
+}
+
+// 判断是否过期
+const isExpire = (record) => {
+  // 标准时间：2000/01/01 00:00:00
+  const startDateTimeString = record.date.replace(/-/g, '/') + ' ' + record.startTime
+  const startDateTime = new Date(startDateTimeString)
+
+  // 当前时间
+  const now = new Date()
+
+  console.log(now)
+  console.log(startDateTime)
+  return now.valueOf() >= startDateTime.valueOf()
 }
 
 onMounted(() => {
