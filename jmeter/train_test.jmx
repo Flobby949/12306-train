@@ -109,7 +109,7 @@
           <stringProp name="LoopController.loops">1</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">500</stringProp>
+        <stringProp name="ThreadGroup.num_threads">20</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.delayedStart">false</boolProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
@@ -125,8 +125,8 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;dailyTrainTicketId&quot;: 1729391949745623040,&#xd;
-  &quot;date&quot;: 1701187200000,&#xd;
+  &quot;dailyTrainTicketId&quot;: 1730397722030247936,&#xd;
+  &quot;date&quot;: 1701446400000,&#xd;
   &quot;start&quot;: &quot;宜兴站&quot;,&#xd;
   &quot;end&quot;: &quot;湖州站&quot;,&#xd;
   &quot;tickets&quot;: [&#xd;
@@ -169,7 +169,7 @@
               </elementProp>
               <elementProp name="token" elementType="Header">
                 <stringProp name="Header.name">token</stringProp>
-                <stringProp name="Header.value">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MDExNTAyMDEsIm1vYmlsZSI6IjE4OTYyNTIxNzUzIiwiaWQiOjE3MDA0Njc2MDYwNjUsImV4cCI6MTcwMTIzNjYwMSwiaWF0IjoxNzAxMTUwMjAxfQ.WfLXFQgSnHGI1U-gCZEg07iKV9v6EqYQTHY1TwZHt5k</stringProp>
+                <stringProp name="Header.value"> eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MDEzOTQ2MTEsIm1vYmlsZSI6IjE4OTYyNTIxNzUzIiwiaWQiOjE3MDA0Njc2MDYwNjUsImV4cCI6MTcwMTQ4MTAxMSwiaWF0IjoxNzAxMzk0NjExfQ.q1Ginz5Z5rDhg1E-qMR9r9QjIYs0wvp3NIDnjmnT7gY</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
