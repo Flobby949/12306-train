@@ -14,11 +14,11 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
-import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.flobby.train.business.domain.*;
@@ -63,6 +63,10 @@ public class ConfirmOrderService {
     private AfterConfirmOrderService afterConfirmOrderService;
     @Autowired
     private RedissonClient redissonClient;
+    @Resource
+    private SkTokenService skTokenService;
+    @Resource
+    private RedisTemplate redisTemplate;
 
     public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
@@ -112,19 +116,39 @@ public class ConfirmOrderService {
     @Transactional(rollbackFor = Exception.class)
     @SentinelResource(value = "doConfirm", blockHandler = "doConfirmBlockHandler")
     public void doConfirm(ConfirmOrderDoReq req) {
-        // 省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已买过
+        // 校验令牌余量
+        boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getMemberId());
+        if (validSkToken) {
+            LOG.info("令牌校验通过");
+        } else {
+            LOG.info("令牌校验不通过");
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SK_TOKEN_FAIL);
+        }
+
+        // 抢锁购票
         String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
-        RLock lock = null;
+        // setIfAbsent就是对应redis的setnx
+        Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 10, TimeUnit.SECONDS);
+        if (Boolean.TRUE.equals(setIfAbsent)) {
+            LOG.info("恭喜，抢到锁了！lockKey：{}", lockKey);
+        } else {
+            // 只是没抢到锁，并不知道票抢完了没，所以提示稍候再试
+            LOG.info("很遗憾，没抢到锁！lockKey：{}", lockKey);
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_ERROR);
+        }
+        // 省略业务数据校验，如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已买过
+        // String lockKey = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
+        // RLock lock = null;
         try {
 
-            lock = redissonClient.getLock(lockKey);
-
-            boolean tryLock = lock.tryLock(0, TimeUnit.SECONDS);
-            if (!tryLock) {
-                LOG.info("获取锁失败");
-                throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_ERROR);
-            }
-            LOG.info("获取锁成功");
+            // lock = redissonClient.getLock(lockKey);
+            //
+            // boolean tryLock = lock.tryLock(0, TimeUnit.SECONDS);
+            // if (!tryLock) {
+            //     LOG.info("获取锁失败");
+            //     throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_ERROR);
+            // }
+            // LOG.info("获取锁成功");
 
             Date date = req.getDate();
             String trainCode = req.getTrainCode();
@@ -235,10 +259,10 @@ public class ConfirmOrderService {
             LOG.error("确认订单失败", e);
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_ERROR);
         } finally {
-            if (ObjectUtil.isNotNull(lock) && lock.isHeldByCurrentThread()) {
-                lock.unlock();
-                LOG.info("释放锁");
-            }
+            // if (ObjectUtil.isNotNull(lock) && lock.isHeldByCurrentThread()) {
+            //     lock.unlock();
+            //     LOG.info("释放锁");
+            // }
         }
     }
 

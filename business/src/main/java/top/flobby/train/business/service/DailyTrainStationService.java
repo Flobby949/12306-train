@@ -6,18 +6,18 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import top.flobby.train.common.resp.PageResp;
-import top.flobby.train.common.utils.SnowUtil;
+import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import top.flobby.train.business.domain.DailyTrainStation;
 import top.flobby.train.business.domain.DailyTrainStationExample;
 import top.flobby.train.business.mapper.DailyTrainStationMapper;
 import top.flobby.train.business.req.DailyTrainStationQueryReq;
 import top.flobby.train.business.req.DailyTrainStationSaveReq;
 import top.flobby.train.business.resp.DailyTrainStationQueryResp;
-import jakarta.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import top.flobby.train.common.resp.PageResp;
+import top.flobby.train.common.utils.SnowUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -82,7 +82,7 @@ public class DailyTrainStationService {
     }
 
     public void genDaily(Date date, String trainCode) {
-        LOG.info("开始生成 [{}] 车次 [{}] 车站信息", DateUtil.formatDate(date),trainCode);
+        LOG.info("开始生成 [{}] 车次 [{}] 车站信息", DateUtil.formatDate(date), trainCode);
         // 删除原有数据
         DailyTrainStationExample dailyTrainStationExample = new DailyTrainStationExample();
         dailyTrainStationExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
@@ -97,6 +97,15 @@ public class DailyTrainStationService {
             dailyTrainStation.setUpdateTime(DateTime.now());
             dailyTrainStationMapper.insert(dailyTrainStation);
         });
-        LOG.info("生成 [{}] 车次 [{}] 车站信息结束", DateUtil.formatDate(date),trainCode);
+        LOG.info("生成 [{}] 车次 [{}] 车站信息结束", DateUtil.formatDate(date), trainCode);
+    }
+
+    /**
+     * 按车次查询全部车站
+     */
+    public long countByTrainCode(Date date, String trainCode) {
+        DailyTrainStationExample example = new DailyTrainStationExample();
+        example.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+        return dailyTrainStationMapper.countByExample(example);
     }
 }
