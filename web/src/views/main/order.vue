@@ -340,15 +340,17 @@ const handleOk = () => {
     .then((data) => {
       if (data.success) {
         notification.success({ description: '提交订单成功' })
+        chooseSeatObj.value = {}
+        passengerChecks.value = []
+        visible.value = false
+        imageCodeModalVisible.value = false
+        imageCode.value = null
         // 跳转到订单列表
         router.push('/my-ticket')
       } else {
         notification.error({ description: data.message })
       }
     })
-  chooseSeatObj.value = {}
-  passengerChecks.value = []
-  visible.value = false
 }
 
 /* ------------------- 验证码 --------------------- */

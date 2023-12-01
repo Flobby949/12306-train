@@ -14,7 +14,6 @@ import top.flobby.train.business.mapper.ConfirmOrderMapper;
 import top.flobby.train.business.mapper.DailyTrainSeatMapper;
 import top.flobby.train.business.mapper.DailyTrainTicketMapperCust;
 import top.flobby.train.business.req.ConfirmOrderTicketReq;
-import top.flobby.train.common.context.LoginMemberContext;
 import top.flobby.train.common.req.MemberTicketReq;
 import top.flobby.train.common.resp.CommonResp;
 
@@ -112,7 +111,7 @@ public class AfterConfirmOrderService {
 
             // 调用会员服务接口，为会员增加一张车票
             MemberTicketReq memberTicketReq = new MemberTicketReq();
-            memberTicketReq.setMemberId(LoginMemberContext.getMemberId());
+            memberTicketReq.setMemberId(confirmOrder.getMemberId());
             memberTicketReq.setPassengerId(tickets.get(j).getPassengerId());
             memberTicketReq.setPassengerName(tickets.get(j).getPassengerName());
             memberTicketReq.setDate(dailyTrainTicket.getDate());

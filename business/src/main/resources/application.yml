@@ -33,6 +33,10 @@ spring:
       cache-null-values: true
       time-to-live: 60s
 
+rocketmq:
+  name-server: http://106.14.246.27:9876
+  producer:
+    group: default
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml

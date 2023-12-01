@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.flobby.train.business.req.ConfirmOrderDoReq;
-import top.flobby.train.business.service.ConfirmOrderService;
+import top.flobby.train.business.service.BeforeConfirmOrderService;
 import top.flobby.train.common.resp.CommonResp;
 
 /**
@@ -26,11 +26,10 @@ import top.flobby.train.common.resp.CommonResp;
 @RequestMapping("/confirm-order")
 public class ConfirmOrderController {
 
-    @Resource
-    private ConfirmOrderService confirmOrderService;
     @Autowired
     private StringRedisTemplate redisTemplate;
-
+    @Resource
+    private BeforeConfirmOrderService beforeConfirmOrderService;
 
     @PostMapping("/do")
     public CommonResp<Object> doConfirm(@Valid @RequestBody ConfirmOrderDoReq req) {
@@ -49,7 +48,7 @@ public class ConfirmOrderController {
             // 验证通过后，移除验证码
             redisTemplate.delete(imageCodeToken);
         }
-        confirmOrderService.doConfirm(req);
+        beforeConfirmOrderService.beforeDoConfirm(req);
         return CommonResp.success();
     }
 }
