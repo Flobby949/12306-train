@@ -3,6 +3,7 @@ package top.flobby.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
@@ -88,7 +89,10 @@ public class DailyTrainTicketService {
         if (ObjectUtil.isNotEmpty(req.getEnd())) {
             criteria.andEndEqualTo(req.getEnd());
         }
-
+        // 查询日期是今天开始15天内的车票
+        DateTime now = DateTime.now();
+        DateTime end = DateUtil.offsetDay(now, 15);
+        criteria.andDateBetween(now.toJdkDate(), end.toJdkDate());
         LOG.info("查询页码：{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
         PageHelper.startPage(req.getPage(), req.getSize());
