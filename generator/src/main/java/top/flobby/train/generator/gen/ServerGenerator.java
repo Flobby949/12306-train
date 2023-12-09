@@ -26,7 +26,7 @@ public class ServerGenerator {
     static String pomPath = "generator/pom.xml";
     static String vueWebPath = "web/src/views/main/";
     static String vueAdminPath = "admin/src/views/main/business/";
-    static boolean readOnly = true;
+    static boolean readOnly = false;
 
     public static void main(String[] args) throws Exception {
         // 获取mybatis-generator
